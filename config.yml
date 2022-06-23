@@ -1,0 +1,7 @@
+modelling:
+  target_clf: target
+  numeric_cols:
+    - sepal width (cm)
+    - sepal length (cm)
+    - petal width (cm)
+    - petal length (cm)
