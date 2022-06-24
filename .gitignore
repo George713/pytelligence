@@ -1,2 +1,9 @@
-pycarrot/__pycache__/*
-tests/__pycache__/*
+# Environment
+.venv
+
+# vscode
+.vscode
+
+# Cache
+./*pytest_cache
+./*__pycache__/*
