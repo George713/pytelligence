@@ -1,9 +1,10 @@
-# Environment
+# Environment folder
 .venv
 
-# vscode
-.vscode
+# Cache directories
+.pytest_cache
+pycarrot/__pycache__
+tests/__pycache__
 
-# Cache
-./*pytest_cache
-./*__pycache__/*
+# Misc
+.vscode
