@@ -1,2 +1,5 @@
-pycarrot/__pycache__/*
-tests/__pycache__/*
+.venv
+.pytest_cache
+.vscode
+pycarrot/__pycache__
+tests/__pycache__
