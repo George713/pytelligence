@@ -1,10 +1,11 @@
 from typing import Tuple, List
 
 from ._train_model import train_model
+from ._setup import Setup
 
 
 def reduce_feature_space(
-    setup: dict,
+    setup: Setup,
     algorithm: str,
     metric: str,
     reference_metric: float,
@@ -26,8 +27,8 @@ def reduce_feature_space(
 
     Arguments
     ---------
-    setup : dict
-        Dictionary containing the prepared data and further
+    setup : Setup
+        Dataclass containing the prepared data and further
         configurations.
 
     algorithm : str
@@ -50,7 +51,7 @@ def reduce_feature_space(
     """
     # Initiate reference values
     threshold = acceptable_loss * reference_metric
-    feature_list = setup["X_train"].columns.to_list()
+    feature_list = setup.X_train.columns.to_list()
     best_feature_list = feature_list[:]
     new_metric = reference_metric
 
@@ -85,7 +86,7 @@ def reduce_feature_space(
 
 
 def _find_worst_feature(
-    setup: dict,
+    setup: Setup,
     algorithm: str,
     metric: str,
     feature_list: List[str],
@@ -104,8 +105,8 @@ def _find_worst_feature(
 
     Arguments
     ---------
-    setup : dict
-        Dictionary containing the prepared data and further
+    setup : Setup
+        Dataclass containing the prepared data and further
         configurations.
 
     algorithm : str

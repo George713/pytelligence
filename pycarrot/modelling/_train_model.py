@@ -20,10 +20,12 @@ from sklearn.tree import (
     ExtraTreeClassifier,
 )
 
+from ._setup import Setup
+
 
 def train_model(
     algorithm: str,
-    setup: Dict,
+    setup: Setup,
     return_models: bool = False,
     feature_list: Optional[List[str]] = None,
 ) -> Tuple[object, pd.DataFrame]:
@@ -36,8 +38,9 @@ def train_model(
     algorithm : str
         specifies which algorithm to use for training
 
-    setup : dict
-        containing data and further options for training
+    setup : Setup
+        Dataclass containing the prepared data and further
+        configurations.
 
     return_models: bool = False
         Flag for returning model instances trained on the
@@ -61,11 +64,11 @@ def train_model(
 
     # Cross-validate model
     X_train = (
-        setup["X_train"][feature_list]
+        setup.X_train[feature_list]
         if feature_list
-        else setup["X_train"]
+        else setup.X_train
     )
-    y_train = setup["y_train"]
+    y_train = setup.y_clf_train
 
     cv_results = cross_validate(
         model,
@@ -147,7 +150,14 @@ def _aggregate_metrics(
         containing single row with model metrics
     """
     # Round result to 3 digits behind comma
-    accuracy, precision, recall, f1, roc_auc, fit_time = (
+    (
+        accuracy,
+        precision,
+        recall,
+        f1,
+        roc_auc,
+        fit_time,
+    ) = (
         round(cv_results[col].mean(), 3)
         for col in [
             "test_accuracy",

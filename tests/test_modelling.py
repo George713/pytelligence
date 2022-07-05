@@ -3,6 +3,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import cross_validate
 
 import pycarrot as pc
+from pycarrot.modelling._setup import Setup
 
 config = pc.init_config("./config_test.yml")
 
@@ -32,7 +33,7 @@ unfitted_model = (
     pc.modelling._train_model._get_unfitted_model("lr")
 )
 
-X_train, y_train = setup["X_train"], setup["y_train"]
+X_train, y_train = setup.X_train, setup.y_clf_train
 
 cv_results = cross_validate(
     unfitted_model,
@@ -61,29 +62,29 @@ def test_return():
 
 
 def test_return_setup():
-    assert type(prepare_data_result[0]) == dict
+    assert type(prepare_data_result[0]) == Setup
     assert type(prepare_data_result[1]) == pd.DataFrame
     assert type(prepare_data_result[2]) == pd.Series
 
 
 def test_return_setup_X_train():
-    assert "X_train" in prepare_data_result[0].keys()
+    assert hasattr(prepare_data_result[0], "X_train")
 
 
 def test_return_setup_X_train_value():
     assert (
-        type(prepare_data_result[0]["X_train"])
-        == pd.DataFrame
+        type(prepare_data_result[0].X_train) == pd.DataFrame
     )
 
 
 def test_return_setup_y_train():
-    assert "y_train" in prepare_data_result[0].keys()
+    assert hasattr(prepare_data_result[0], "y_clf_train")
 
 
 def test_return_setup_y_train_value():
     assert (
-        type(prepare_data_result[0]["y_train"]) == pd.Series
+        type(prepare_data_result[0].y_clf_train)
+        == pd.Series
     )
 
 

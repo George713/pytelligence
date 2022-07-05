@@ -3,6 +3,8 @@ from typing import Tuple
 
 import pandas as pd
 
+from ._setup import Setup
+
 
 def prepare_data(
     train_data: pd.DataFrame,
@@ -32,10 +34,10 @@ def prepare_data(
     y_train = train_data[config["modelling"]["target_clf"]]
 
     return (
-        {
-            "X_train": X_train,
-            "y_train": y_train,
-        },
+        Setup(
+            X_train=X_train,
+            y_clf_train=y_train,
+        ),
         X_train.head(),
         y_train.head(),
     )
