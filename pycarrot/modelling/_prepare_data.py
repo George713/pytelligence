@@ -2,7 +2,7 @@ from typing import List, Tuple
 
 import pandas as pd
 
-from ._setup import Setup
+from .internals import Setup
 
 
 def prepare_data(

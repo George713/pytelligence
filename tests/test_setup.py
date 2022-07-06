@@ -1,6 +1,6 @@
 import pandas as pd
 
-from pycarrot.modelling._setup import Setup
+from pycarrot.modelling.internals import Setup
 
 setup = Setup(
     X_train=pd.DataFrame(),

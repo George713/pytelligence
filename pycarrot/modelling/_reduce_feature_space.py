@@ -1,7 +1,7 @@
 from typing import Tuple, List
 
 from ._train_model import train_model
-from ._setup import Setup
+from .internals import Setup
 
 
 def reduce_feature_space(
@@ -56,9 +56,7 @@ def reduce_feature_space(
     new_metric = reference_metric
 
     # Iteratively remove features
-    while (threshold <= new_metric) & (
-        len(feature_list) > 1
-    ):
+    while (threshold <= new_metric) & (len(feature_list) > 1):
         (worst_feature, new_metric) = _find_worst_feature(
             setup,
             algorithm,
@@ -66,9 +64,7 @@ def reduce_feature_space(
             feature_list,
         )
         feature_list.remove(worst_feature)
-        print(
-            f"New metric: {new_metric:.3}, worst feature: {worst_feature}"
-        )
+        print(f"New metric: {new_metric:.3}, worst feature: {worst_feature}")
 
         # Update reference_metric and threshold if
         # reference_metric was improved upon
@@ -132,11 +128,7 @@ def _find_worst_feature(
         _, metrics = train_model(
             algorithm,
             setup,
-            feature_list=[
-                feat
-                for feat in feature_list
-                if feat != feature
-            ],
+            feature_list=[feat for feat in feature_list if feat != feature],
         )
         removed_feature.append(feature)
         new_metric.append(metrics[metric].values[0])

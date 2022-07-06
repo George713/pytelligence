@@ -20,7 +20,7 @@ from sklearn.tree import (
     ExtraTreeClassifier,
 )
 
-from ._setup import Setup
+from .internals import Setup
 
 
 def train_model(
@@ -63,11 +63,7 @@ def train_model(
     model = _get_unfitted_model(algorithm)
 
     # Cross-validate model
-    X_train = (
-        setup.X_train[feature_list]
-        if feature_list
-        else setup.X_train
-    )
+    X_train = setup.X_train[feature_list] if feature_list else setup.X_train
     y_train = setup.y_clf_train
 
     cv_results = cross_validate(
@@ -85,11 +81,7 @@ def train_model(
     )
 
     # Fit model on full training dataset
-    model = (
-        model.fit(X_train, y_train)
-        if return_models
-        else None
-    )
+    model = model.fit(X_train, y_train) if return_models else None
 
     # Aggregate metrics
     metrics = _aggregate_metrics(cv_results, algorithm)
@@ -127,14 +119,10 @@ def _get_unfitted_model(algorithm: str) -> object:
     if algorithm == "rbfsvc":
         return SVC()
 
-    raise LookupError(
-        f"'{algorithm}' is not among the avaiable algorithms."
-    )
+    raise LookupError(f"'{algorithm}' is not among the avaiable algorithms.")
 
 
-def _aggregate_metrics(
-    cv_results: Dict, algorithm: str
-) -> pd.DataFrame:
+def _aggregate_metrics(cv_results: Dict, algorithm: str) -> pd.DataFrame:
     """
     Adjusts results of cross validation.
 
@@ -150,14 +138,7 @@ def _aggregate_metrics(
         containing single row with model metrics
     """
     # Round result to 3 digits behind comma
-    (
-        accuracy,
-        precision,
-        recall,
-        f1,
-        roc_auc,
-        fit_time,
-    ) = (
+    (accuracy, precision, recall, f1, roc_auc, fit_time,) = (
         round(cv_results[col].mean(), 3)
         for col in [
             "test_accuracy",
