@@ -1,4 +1,3 @@
-from logging import raiseExceptions
 from typing import List, Tuple
 
 import pandas as pd
@@ -12,18 +11,12 @@ def prepare_data(
 ) -> Tuple:
 
     # Checking input
-    _check_clf_target(
-        train_data, config["modelling"]["target_clf"]
-    )
-    _check_numeric_cols(
-        train_data, config["modelling"]["numeric_cols"]
-    )
+    _check_clf_target(train_data, config["modelling"]["target_clf"])
+    _check_numeric_cols(train_data, config["modelling"]["numeric_cols"])
 
     ## Preparing
     # Composing X_train
-    X_train = train_data[
-        [*config["modelling"]["numeric_cols"]]
-    ]
+    X_train = train_data[[*config["modelling"]["numeric_cols"]]]
 
     y_train = train_data[config["modelling"]["target_clf"]]
 
@@ -37,9 +30,7 @@ def prepare_data(
     )
 
 
-def _check_clf_target(
-    train_data: pd.DataFrame, clf_col: str
-) -> None:
+def _check_clf_target(train_data: pd.DataFrame, clf_col: str) -> None:
     """Raises LookupError if clf target column not in
     train_data dataframe.
 
@@ -51,13 +42,12 @@ def _check_clf_target(
     """
     if clf_col not in train_data:
         raise LookupError(
-            f"{clf_col} not in train_data dataframe. Check existence and spelling."
+            f"{clf_col}, which was provided as 'target_clf', is not in\
+                 train_data dataframe. Check existence and spelling."
         )
 
 
-def _check_numeric_cols(
-    train_data: pd.DataFrame, numeric_cols: List[str]
-) -> None:
+def _check_numeric_cols(train_data: pd.DataFrame, numeric_cols: List[str]) -> None:
     """Raises LookupError if one or more of the numeric
     columns listed in config are missing.
 
@@ -70,5 +60,6 @@ def _check_numeric_cols(
     for col in numeric_cols:
         if col not in train_data:
             raise LookupError(
-                f"{col} not in train_data dataframe. Check existence and spelling."
+                f"{col}, which was provided in 'numeric_cols', is not in\
+                     train_data dataframe. Check existence and spelling."
             )
