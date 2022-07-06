@@ -4,10 +4,11 @@
 # Cache directories
 .pytest_cache
 *__pycache__*
+pycarrot/__pycache__*
+pycarrot/modelling/__pycache__*
+tests/__pycache__*
+tests/.pytest_cache
 
 
 # Misc
 .vscode
-pycarrot/modelling/__pycache__/_prepare_data.cpython-310.pyc
-pycarrot/modelling/__pycache__/_reduce_feature_space.cpython-310.pyc
-pycarrot/modelling/__pycache__/_train_model.cpython-310.pyc
