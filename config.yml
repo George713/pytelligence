@@ -1,12 +1,13 @@
 modelling:
-  target_clf: rings
+  target_clf: "class"
   numeric_cols:
-    - 'length'
-    - 'diameter'
-    - 'height'
-    - 'whole weight'
-    - 'shucked weight'
-    - 'viscera weight'
-    - 'shell weight'
+    - "deg-malig"
   categorical_cols:
-    - 'sex'
+    - "age"
+    - "menopause"
+    - "tumor-size"
+    - "inv-nodes"
+    - "node-caps"
+    - "breast"
+    - "breast-quad"
+    - "irradiat"

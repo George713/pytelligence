@@ -9,6 +9,6 @@ pycarrot/modelling/__pycache__*
 tests/__pycache__*
 tests/.pytest_cache
 
-
 # Misc
 .vscode
+.python-version
