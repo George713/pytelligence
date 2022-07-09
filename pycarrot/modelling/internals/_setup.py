@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import pandas as pd
+from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import LabelEncoder
 
 
@@ -20,8 +21,12 @@ class Setup:
 
     y_clf_encoder: LabelEncoder
         LabelEncoder used for encoding classification target.
+
+    prep_pipe: Pipeline
+        Preprocessing pipeline used before model fitting/prediction.
     """
 
     X_train: pd.DataFrame
     y_clf_train: pd.Series
     y_clf_encoder: LabelEncoder
+    prep_pipe: Pipeline

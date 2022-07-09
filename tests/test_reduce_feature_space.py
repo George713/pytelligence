@@ -16,6 +16,7 @@ config = {
             "petal width (cm)",
             "petal length (cm)",
         ],
+        "categorical_cols": [],
     }
 }
 

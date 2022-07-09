@@ -2,3 +2,5 @@ modelling:
   target_clf: target_clf
   numeric_cols:
     - num_col
+  categorical_cols:
+    - cat_col

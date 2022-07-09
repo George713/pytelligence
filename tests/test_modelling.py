@@ -10,6 +10,7 @@ config = pc.init_config("./config_test.yml")
 df_clf = pd.DataFrame(
     data={
         "num_col": [i for i in range(100)],
+        "cat_col": [str(i) for i in range(100)],
         "target_clf": [0] * 50 + [1] * 50,
     }
 )
