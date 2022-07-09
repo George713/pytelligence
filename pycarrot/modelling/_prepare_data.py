@@ -92,7 +92,7 @@ def _encode_y_train(y: pd.Series) -> Tuple[pd.Series, LabelEncoder]:
     else:
         le = LabelEncoder().fit(y)
         y_trans = pd.Series(le.transform(y), name=y.name)
-        # logger.info(f"Encoded target variable using classes: {le.classes_}")
+        # logger.info(f"Encoded target variable using classes: {*[(i, class_) for i, class_ in enumerate(le.classes_)]}")
         return pd.to_numeric(y_trans, downcast="integer"), le
 
 
