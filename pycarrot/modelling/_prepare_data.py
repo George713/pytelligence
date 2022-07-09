@@ -14,7 +14,26 @@ from .internals import _get_prep_pipeline
 def prepare_data(
     train_data: pd.DataFrame,
     config: dict,
-) -> Tuple:
+) -> Tuple[Setup, pd.DataFrame, pd.Series]:
+    """Prepares data by
+      1) One-Hot-Encoding remaining categorical features
+      2) Encoding labels of classification target - if required
+
+    Parameters
+    ----------
+    train_data : pd.DataFrame
+        Dataframe provided by user. Must contain columns specified in config.
+    config : dict
+        Loaded config containing input features and preparational options.
+
+    Returns
+    -------
+    Tuple
+        Setup, which will be handed to function compare_algorithms
+        for further processing.
+        X_sample & y_sample showing what the data looks like after
+        preparation.
+    """
 
     # Checking input
     _check_clf_target(train_data, config["modelling"]["target_clf"])
@@ -25,9 +44,12 @@ def prepare_data(
     original_features = _get_original_features(config)
     target_clf = config["modelling"]["target_clf"]
 
-    ## Preparing
+    ###################
+    ### Preparation ###
+
     # Assembling preprocessing pipeline
     prep_pipe = _get_prep_pipeline()
+
     # Composing X_train
     X_train = prep_pipe.fit_transform(train_data[original_features])
 
