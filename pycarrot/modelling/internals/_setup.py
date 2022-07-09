@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import pandas as pd
+from sklearn.preprocessing import LabelEncoder
 
 
 @dataclass
@@ -16,7 +17,11 @@ class Setup:
 
     y_clf_train: pd.Series
         Classifier target of training dataset.
+
+    y_clf_encoder: LabelEncoder
+        LabelEncoder used for encoding classification target.
     """
 
     X_train: pd.DataFrame
     y_clf_train: pd.Series
+    y_clf_encoder: LabelEncoder
