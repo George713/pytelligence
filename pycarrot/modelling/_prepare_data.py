@@ -22,10 +22,7 @@ def prepare_data(
     _check_categorical_cols(train_data, config["modelling"]["categorical_cols"])
 
     # Get features and targets from config
-    original_features = [
-        *config["modelling"]["numeric_cols"],
-        *config["modelling"]["categorical_cols"],
-    ]
+    original_features = _get_original_features(config)
     target_clf = config["modelling"]["target_clf"]
 
     ## Preparing
@@ -147,3 +144,30 @@ def _check_encoding_necessity(y: pd.Series) -> bool:
         Boolean flag used for encoding
     """
     return True if (y.dtype == "O") else False
+
+
+def _get_original_features(config: dict) -> List[str]:
+    """Returns list of features passed to prepare_data function.
+
+    Parameters
+    ----------
+    config : dict
+
+    Returns
+    -------
+    List[str]
+        Combination of numeric, categorical and date features listed
+        in config.yml.
+    """
+    numeric_features = (
+        config["modelling"]["numeric_cols"]
+        if config["modelling"]["numeric_cols"]
+        else []
+    )
+    categorical_features = (
+        config["modelling"]["categorical_cols"]
+        if config["modelling"]["categorical_cols"]
+        else []
+    )
+
+    return [*numeric_features, *categorical_features]
