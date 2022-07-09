@@ -1,3 +1,4 @@
+import functools
 from typing import Dict, List, Tuple, Optional
 
 import pandas as pd
@@ -11,6 +12,7 @@ from sklearn.linear_model import (
     Perceptron,
     RidgeClassifier,
 )
+from sklearn.metrics import make_scorer, precision_score
 from sklearn.model_selection import cross_validate
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
@@ -70,13 +72,17 @@ def train_model(
         model,
         X_train,
         y_train,
-        scoring=[
-            "accuracy",
-            "precision",
-            "recall",
-            "f1",
-            "roc_auc",
-        ],
+        scoring={
+            "accuracy": "accuracy",
+            "precision": make_scorer(
+                lambda *args, **kwargs: precision_score(
+                    *args, **kwargs, zero_division=0
+                )
+            ),
+            "recall": "recall",
+            "f1": "f1",
+            "roc_auc": "roc_auc",
+        },
         n_jobs=-1,
     )
 
