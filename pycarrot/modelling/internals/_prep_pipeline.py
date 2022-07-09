@@ -19,9 +19,7 @@ def _get_prep_pipeline() -> Pipeline:
 
 
 class OHE(BaseEstimator, TransformerMixin):
-    """Transformer class performing One-Hot-Encoding of
-    'object' typed columns.
-    """
+    """Transformer class performing One-Hot-Encoding of 'object' typed columns."""
 
     def __init__(self):
         self.ohe = OneHotEncoder(handle_unknown="ignore")
@@ -35,6 +33,7 @@ class OHE(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X, y=None):
+        # Checking whether encoder was fitted
         if self.col_names is not None:
             non_categorical_data = X.select_dtypes(exclude=("object"))
             categorical_data = X.select_dtypes(include=("object"))
