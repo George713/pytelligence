@@ -3,8 +3,12 @@
 
 # Cache directories
 .pytest_cache
-pycarrot/__pycache__
-tests/__pycache__
+*__pycache__*
+pycarrot/__pycache__*
+pycarrot/modelling/__pycache__*
+tests/__pycache__*
+tests/.pytest_cache
 
 # Misc
 .vscode
+.python-version

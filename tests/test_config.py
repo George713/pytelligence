@@ -1,6 +1,6 @@
 import pycarrot as pc
 
-config = pc.init_config("./config.yml")
+config = pc.init_config("./config_test.yml")
 
 
 def test_init_config():

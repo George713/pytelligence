@@ -1,3 +1,4 @@
+import functools
 from typing import Dict, List, Tuple, Optional
 
 import pandas as pd
@@ -11,6 +12,7 @@ from sklearn.linear_model import (
     Perceptron,
     RidgeClassifier,
 )
+from sklearn.metrics import make_scorer, precision_score
 from sklearn.model_selection import cross_validate
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
@@ -20,10 +22,12 @@ from sklearn.tree import (
     ExtraTreeClassifier,
 )
 
+from .internals import Setup
+
 
 def train_model(
     algorithm: str,
-    setup: Dict,
+    setup: Setup,
     return_models: bool = False,
     feature_list: Optional[List[str]] = None,
 ) -> Tuple[object, pd.DataFrame]:
@@ -36,8 +40,9 @@ def train_model(
     algorithm : str
         specifies which algorithm to use for training
 
-    setup : dict
-        containing data and further options for training
+    setup : Setup
+        Dataclass containing the prepared data and further
+        configurations.
 
     return_models: bool = False
         Flag for returning model instances trained on the
@@ -60,33 +65,29 @@ def train_model(
     model = _get_unfitted_model(algorithm)
 
     # Cross-validate model
-    X_train = (
-        setup["X_train"][feature_list]
-        if feature_list
-        else setup["X_train"]
-    )
-    y_train = setup["y_train"]
+    X_train = setup.X_train[feature_list] if feature_list else setup.X_train
+    y_train = setup.y_clf_train
 
     cv_results = cross_validate(
         model,
         X_train,
         y_train,
-        scoring=[
-            "accuracy",
-            "precision",
-            "recall",
-            "f1",
-            "roc_auc",
-        ],
+        scoring={
+            "accuracy": "accuracy",
+            "precision": make_scorer(
+                lambda *args, **kwargs: precision_score(
+                    *args, **kwargs, zero_division=0
+                )
+            ),
+            "recall": "recall",
+            "f1": "f1",
+            "roc_auc": "roc_auc",
+        },
         n_jobs=-1,
     )
 
     # Fit model on full training dataset
-    model = (
-        model.fit(X_train, y_train)
-        if return_models
-        else None
-    )
+    model = model.fit(X_train, y_train) if return_models else None
 
     # Aggregate metrics
     metrics = _aggregate_metrics(cv_results, algorithm)
@@ -124,14 +125,10 @@ def _get_unfitted_model(algorithm: str) -> object:
     if algorithm == "rbfsvc":
         return SVC()
 
-    raise LookupError(
-        f"'{algorithm}' is not among the avaiable algorithms."
-    )
+    raise LookupError(f"'{algorithm}' is not among the avaiable algorithms.")
 
 
-def _aggregate_metrics(
-    cv_results: Dict, algorithm: str
-) -> pd.DataFrame:
+def _aggregate_metrics(cv_results: Dict, algorithm: str) -> pd.DataFrame:
     """
     Adjusts results of cross validation.
 
@@ -147,7 +144,7 @@ def _aggregate_metrics(
         containing single row with model metrics
     """
     # Round result to 3 digits behind comma
-    accuracy, precision, recall, f1, roc_auc, fit_time = (
+    (accuracy, precision, recall, f1, roc_auc, fit_time,) = (
         round(cv_results[col].mean(), 3)
         for col in [
             "test_accuracy",

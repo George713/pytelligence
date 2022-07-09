@@ -1,10 +1,11 @@
 from typing import Tuple, List
 
 from ._train_model import train_model
+from .internals import Setup
 
 
 def reduce_feature_space(
-    setup: dict,
+    setup: Setup,
     algorithm: str,
     metric: str,
     reference_metric: float,
@@ -26,8 +27,8 @@ def reduce_feature_space(
 
     Arguments
     ---------
-    setup : dict
-        Dictionary containing the prepared data and further
+    setup : Setup
+        Dataclass containing the prepared data and further
         configurations.
 
     algorithm : str
@@ -50,14 +51,12 @@ def reduce_feature_space(
     """
     # Initiate reference values
     threshold = acceptable_loss * reference_metric
-    feature_list = setup["X_train"].columns.to_list()
+    feature_list = setup.X_train.columns.to_list()
     best_feature_list = feature_list[:]
     new_metric = reference_metric
 
     # Iteratively remove features
-    while (threshold <= new_metric) & (
-        len(feature_list) > 1
-    ):
+    while (threshold <= new_metric) & (len(feature_list) > 1):
         (worst_feature, new_metric) = _find_worst_feature(
             setup,
             algorithm,
@@ -65,9 +64,7 @@ def reduce_feature_space(
             feature_list,
         )
         feature_list.remove(worst_feature)
-        print(
-            f"New metric: {new_metric:.3}, worst feature: {worst_feature}"
-        )
+        print(f"New metric: {new_metric:.3}, worst feature: {worst_feature}")
 
         # Update reference_metric and threshold if
         # reference_metric was improved upon
@@ -85,7 +82,7 @@ def reduce_feature_space(
 
 
 def _find_worst_feature(
-    setup: dict,
+    setup: Setup,
     algorithm: str,
     metric: str,
     feature_list: List[str],
@@ -104,8 +101,8 @@ def _find_worst_feature(
 
     Arguments
     ---------
-    setup : dict
-        Dictionary containing the prepared data and further
+    setup : Setup
+        Dataclass containing the prepared data and further
         configurations.
 
     algorithm : str
@@ -131,11 +128,7 @@ def _find_worst_feature(
         _, metrics = train_model(
             algorithm,
             setup,
-            feature_list=[
-                feat
-                for feat in feature_list
-                if feat != feature
-            ],
+            feature_list=[feat for feat in feature_list if feat != feature],
         )
         removed_feature.append(feature)
         new_metric.append(metrics[metric].values[0])
