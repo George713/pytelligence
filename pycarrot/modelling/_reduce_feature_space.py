@@ -25,8 +25,8 @@ def reduce_feature_space(
     If a metric higher than the reference_metric is found,
     it is printed.
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     setup : Setup
         Dataclass containing the prepared data and further
         configurations.
@@ -99,8 +99,8 @@ def _find_worst_feature(
     The feature associated with the largest metric after
     removal of the feature is returned alongside the metric.
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     setup : Setup
         Dataclass containing the prepared data and further
         configurations.
