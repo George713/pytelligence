@@ -31,7 +31,7 @@ def compare_algorithms(
     include: List[str] = _get_available_algos(),
     sort: Optional[str] = None,
     return_models: bool = False,
-) -> Tuple[pd.DataFrame, Dict]:
+) -> Tuple[pd.DataFrame, List, List]:
     """
     Calculates various metrics for different machine learning
     algorithms.
@@ -56,9 +56,12 @@ def compare_algorithms(
     compare_df : pd.DataFrame
         sorted overview of algorithm performance
 
-    model_dict : dict
-        keys: algorithms string abbreviation
-        values: trained model instance
+    algo_list : list
+        List of algorithms ordered by sort metric.
+
+    model_list : list
+        Trained model instance if return_models == True.
+        Otherwise returns list of None.
     """
     # Checking inputs
     _check_include(include)
@@ -79,14 +82,16 @@ def compare_algorithms(
         compare_df = pd.concat([compare_df, metrics])
         model_dict[algorithm] = model
 
-    # Sort compare_df
+    # Sort compare_df & model_list
     if sort:
         compare_df = compare_df.sort_values(
             by=[sort, "Fit time (s)"],
             ascending=[False, True],
         ).reset_index(drop=True)
+        algo_list = compare_df["algorithm"].to_list()
+        model_list = [model_dict[key] for key in compare_df["algorithm"]]
 
-    return compare_df, model_dict
+    return compare_df, algo_list, model_list
 
 
 def _prepare_compare_df() -> pd.DataFrame:
