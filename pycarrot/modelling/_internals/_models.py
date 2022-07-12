@@ -102,10 +102,13 @@ class ClfLinearRegression(ModelContainer):
          Requires normalized features for good convergence. Typically
          only minor differences in model quality are observed by varying
          the solver.
+      "l1_ratio": If solver `elasticnet` is used, the l1_ratio determines
+         the combination ratio between l1 and l2. Set to 0.5 for equal
+         mixture of the two penalties.
     """
 
     def __init__(self, trial: Optional[optuna.Trial] = None):
-        self.base_model = LogisticRegression(solver="saga", max_iter=1000)
+        self.base_model = LogisticRegression(solver="saga", max_iter=1000, l1_ratio=0.5)
         self.hyperparams = (
             {
                 "C": trial.suggest_float("c", 1e-6, 1e2, log=True),
