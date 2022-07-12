@@ -31,6 +31,8 @@ Example
 from typing import List, Tuple
 
 import pandas as pd
+from sklearn.model_selection import cross_val_score
+import optuna
 
 from . import _internals
 
@@ -90,7 +92,7 @@ def tune_hyperparams(
             Otherwise returns list of None.
     """
     # Checking inputs
-    _internals.check_include(include)
+    _internals.check_include(algo_list=include)
     _internals.check_metric(metric=optimize)
 
     # # Preparing empty compare_df and model_dict
@@ -98,15 +100,43 @@ def tune_hyperparams(
     # compare_df = _prepare_compare_df()
     # model_dict = {}
 
-    # for algorithm in include:
-    #     objective = _get_objective_function(algorithm=algorithm, optimize=optimize)
-    #     study = _create_study
-    #     _study.optimize(objective, n_trials=n_trials)
-    #     metric, hyperparams = _get_best_result(study)
-    #     compare_df.loc[len(compare_df)] = [
-    #         algorithm,
-    #         metric,
-    #         hyperparams,
-    #     ]
+    for algorithm in include:
+        objective = _get_objective_function(algorithm=algorithm, optimize=optimize)
+        # study = _create_study
+        # _study.optimize(objective, n_trials=n_trials)
+        # metric, hyperparams = _get_best_result(study)
+        # compare_df.loc[len(compare_df)] = [
+        #     algorithm,
+        #     metric,
+        #     hyperparams,
+        # ]
 
     return pd.DataFrame(), [], []
+
+
+def _get_objective_function(algorithm: str, optimize: str) -> object:
+    """Returns model specific objective function for usage in optuna's
+    stduy.optimize() function.
+
+    Parameters
+    ----------
+    algorithm : str
+        Model algorithm to use in objective function.
+
+    optimize : str
+        Metric to optimize for.
+
+    Returns
+    -------
+    object
+        `objective function` object
+    """
+
+    def objective_fn(trial: optuna.Trial):
+        model = _internals.get_model_instance(algorithm=algorithm, trial=trial)
+        # cv_scores = cross_val_score(model, setup.X_train, setup.y_clf_train, scoring=optimize, n_jobs=-1, error_score='raise')
+
+        # return cv_scores.mean()
+        pass
+
+    return objective_fn
