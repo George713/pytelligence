@@ -1,20 +1,16 @@
-from ast import Raise
-from ctypes import Union
-from genericpath import exists
 from typing import List, Tuple
 
 import pandas as pd
 from pyparsing import Optional
 from sklearn.preprocessing import LabelEncoder
 
-from .internals import Setup
-from .internals import _get_prep_pipeline
+from . import _internals
 
 
 def prepare_data(
     train_data: pd.DataFrame,
     config: dict,
-) -> Tuple[Setup, pd.DataFrame, pd.Series]:
+) -> Tuple[_internals.Setup, pd.DataFrame, pd.Series]:
     """Prepares data by
       1) One-Hot-Encoding remaining categorical features
       2) Encoding labels of classification target - if required
@@ -48,7 +44,7 @@ def prepare_data(
     ### Preparation ###
 
     # Assembling preprocessing pipeline
-    prep_pipe = _get_prep_pipeline()
+    prep_pipe = _internals.get_prep_pipeline()
 
     # Composing X_train
     X_train = prep_pipe.fit_transform(train_data[original_features])
@@ -57,7 +53,7 @@ def prepare_data(
     y_train, y_clf_encoder = _encode_y_train(train_data[target_clf])
 
     return (
-        Setup(
+        _internals.Setup(
             X_train=X_train,
             y_clf_train=y_train,
             y_clf_encoder=y_clf_encoder,

@@ -1,11 +1,11 @@
 from typing import Tuple, List
 
 from ._train_model import train_model
-from .internals import Setup
+from . import _internals
 
 
 def reduce_feature_space(
-    setup: Setup,
+    setup: _internals.Setup,
     algorithm: str,
     metric: str,
     reference_metric: float,
@@ -82,7 +82,7 @@ def reduce_feature_space(
 
 
 def _find_worst_feature(
-    setup: Setup,
+    setup: _internals.Setup,
     algorithm: str,
     metric: str,
     feature_list: List[str],

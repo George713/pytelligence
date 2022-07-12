@@ -1,6 +1,6 @@
 import pycarrot as pc
 
-config = pc.init_config("./config_test.yml")
+config = pc.init_config("./tests/config_test.yml")
 
 
 def test_init_config():
@@ -17,3 +17,7 @@ def test_target_clf():
 
 def test_numeric_cols():
     assert "numeric_cols" in config["modelling"].keys()
+
+
+def test_numeric_cols():
+    assert "categorical_cols" in config["modelling"].keys()

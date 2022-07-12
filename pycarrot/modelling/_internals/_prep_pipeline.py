@@ -4,7 +4,7 @@ import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
 
 
-def _get_prep_pipeline() -> Pipeline:
+def get_prep_pipeline() -> Pipeline:
     """Return unfitted preprocessing pipeline.
 
     Preprocessing steps include:
