@@ -33,3 +33,11 @@ def test_return_types():
     assert type(compare_df) == pd.DataFrame
     assert type(algo_list) == list
     assert type(model_list) == list
+
+
+def test_return_type_objective_function():
+    """Tests return type of `_get_objective_function()`."""
+    objective_fn = pc.modelling._tune_hyperparams._get_objective_function(
+        algorithm="lr", optimize="f1"
+    )
+    assert callable(objective_fn)
