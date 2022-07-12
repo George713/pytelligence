@@ -1,4 +1,6 @@
 import pandas as pd
+import numpy as np
+import optuna
 
 import pycarrot as pc
 
@@ -17,13 +19,20 @@ setup, _, _ = pc.modelling.prepare_data(
     train_data=df_clf,
     config=config,
 )
+
+objective_fn = pc.modelling._tune_hyperparams._get_objective_function(
+    algorithm="lr", optimize="f1", setup=setup
+)
+
+study = optuna.create_study(direction="maximize")
+trial = study.ask()
 # Preparation End
 
 compare_df, algo_list, model_list = pc.modelling.tune_hyperparams(
     setup=setup,
-    include=["lr", "knn"],
+    include=["lr"],
     optimize="f1",
-    n_trials=50,
+    n_trials=2,
     return_models=True,
 )
 
@@ -37,7 +46,14 @@ def test_return_types():
 
 def test_return_type_objective_function():
     """Tests return type of `_get_objective_function()`."""
-    objective_fn = pc.modelling._tune_hyperparams._get_objective_function(
-        algorithm="lr", optimize="f1"
-    )
     assert callable(objective_fn)
+
+
+def test_return_type_of_objective_function():
+    """Tests return type of `objective_fc`."""
+    result = objective_fn(trial)
+    assert type(result) == np.float64
+
+
+def test_columns_of_returned_compare_df():
+    assert set(compare_df.columns) == set(["algorithm", "metric", "hyperparams"])
