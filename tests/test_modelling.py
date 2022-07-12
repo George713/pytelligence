@@ -25,7 +25,6 @@ compare_algorithms_result = pc.modelling.compare_algorithms(
 )
 compare_df, algo_list, model_list = compare_algorithms_result
 
-available_algo_result = pc.modelling._internals.get_available_algos()
 
 unfitted_model = pc.modelling._train_model._get_unfitted_model("lr")
 
@@ -81,49 +80,6 @@ def test_return_compare():
     assert type(compare_algorithms_result[2]) == list
 
 
-def testget_available_algos_type():
-    assert type(available_algo_result) == list
-    assert all(type(algo) == str for algo in available_algo_result)
-    assert all(
-        algo in available_algo_result
-        for algo in [
-            "lr",
-            "dt",
-            "extratree",
-            "extratrees",
-            "rf",
-            "ridge",
-            "perceptron",
-            "passive-aggressive",
-            "knn",
-            "nb",
-            "linearsvc",
-            "rbfsvc",
-        ]
-    )
-
-
-def testget_available_algos_type_of_entries():
-    assert all(type(algo) == str for algo in available_algo_result)
-
-
-def testget_available_algos_entries():
-    assert all(algo in available_algo_result for algo in ["lr"])
-
-
-def testcheck_include_correct():
-    result = pc.modelling._internals.check_include(available_algo_result)
-    assert result is None
-
-
-def testcheck_include_invalid():
-    try:
-        result = pc.modelling._internals.check_include(["lr", "wrong_algo_name", 5])
-    except Exception as e:
-        result = e
-    assert type(result) == LookupError
-
-
 def test_train_model_return_type():
     result = pc.modelling._train_model.train_model("lr", setup, return_models=True)
     assert type(result) == tuple
@@ -158,16 +114,3 @@ def test_agg_metrics_cols():
             "roc_auc",
         ]
     )
-
-
-def testcheck_sort():
-    result = pc.modelling._internals.check_sort(None)
-    assert result is None
-
-
-def testcheck_sort_fail():
-    try:
-        result = pc.modelling._internals.check_sort("f7")
-    except Exception as e:
-        result = e
-    assert type(result) == LookupError
