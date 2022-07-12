@@ -31,6 +31,7 @@ Example
 from typing import List, Tuple
 
 import pandas as pd
+import numpy as np
 from sklearn.model_selection import cross_val_score
 import optuna
 
@@ -95,26 +96,35 @@ def tune_hyperparams(
     _internals.check_include(algo_list=include)
     _internals.check_metric(metric=optimize)
 
-    # # Preparing empty compare_df and model_dict
-    # # with populating occuring later
+    # Preparing empty compare_df and model_dict
+    # with populating occuring later
+    compare_df = pd.DataFrame({}, columns=["algorithm", "metric", "hyperparams"])
     # compare_df = _prepare_compare_df()
-    # model_dict = {}
+    model_dict = {}
 
     for algorithm in include:
-        objective = _get_objective_function(algorithm=algorithm, optimize=optimize)
-        # study = _create_study
-        # _study.optimize(objective, n_trials=n_trials)
-        # metric, hyperparams = _get_best_result(study)
-        # compare_df.loc[len(compare_df)] = [
-        #     algorithm,
-        #     metric,
-        #     hyperparams,
-        # ]
+        objective = _get_objective_function(
+            algorithm=algorithm,
+            optimize=optimize,
+            setup=setup,
+        )
+        study = optuna.create_study(
+            study_name=f"study_{algorithm}", direction="maximize"
+        )
+        study.optimize(objective, n_trials=n_trials)
+        metric, hyperparams = _get_best_result(study)
+        compare_df.loc[len(compare_df)] = [
+            algorithm,
+            metric,
+            hyperparams,
+        ]
 
-    return pd.DataFrame(), [], []
+    return compare_df, [], []
 
 
-def _get_objective_function(algorithm: str, optimize: str) -> object:
+def _get_objective_function(
+    algorithm: str, optimize: str, setup: _internals.Setup
+) -> object:
     """Returns model specific objective function for usage in optuna's
     stduy.optimize() function.
 
@@ -126,17 +136,55 @@ def _get_objective_function(algorithm: str, optimize: str) -> object:
     optimize : str
         Metric to optimize for.
 
+    setup : _internals.Setup
+        Setup object containing training data.
+
     Returns
     -------
     object
         `objective function` object
     """
 
-    def objective_fn(trial: optuna.Trial):
-        model = _internals.get_model_instance(algorithm=algorithm, trial=trial)
-        # cv_scores = cross_val_score(model, setup.X_train, setup.y_clf_train, scoring=optimize, n_jobs=-1, error_score='raise')
+    def objective_fn(trial: optuna.Trial) -> np.float64:
+        """Objective function for usage within optuna's study.optimize().
 
-        # return cv_scores.mean()
-        pass
+        Parameters
+        ----------
+        trial : optuna.Trial
+            Handled automatically by study.optimize()
+
+        Returns
+        -------
+        np.float64
+            Mean metric of all folds.
+        """
+        model = _internals.get_model_instance(algorithm=algorithm, trial=trial)
+        cv_scores = cross_val_score(
+            model,
+            setup.X_train,
+            setup.y_clf_train,
+            scoring=optimize,
+            n_jobs=-1,
+            error_score="raise",
+        )
+
+        return cv_scores.mean()
 
     return objective_fn
+
+
+def _get_best_result(study: optuna.Study) -> Tuple[float, dict]:
+    """Returns metric and hyperparameters of best model found
+    during study run.
+
+    Parameters
+    ----------
+    study : optuna.Study
+
+    Returns
+    -------
+    Tuple[float, dict]
+        metric : float
+        hyperparams : dict
+    """
+    return study.best_trial.values[0], study.best_trial.params
