@@ -26,12 +26,12 @@ def get_available_algos() -> List[str]:
     ]
 
 
-def check_include(include: List[str]):
-    """Checks `include` list for correct strings.
+def check_include(algo_list: List[str]):
+    """Checks `algo_list` for correct strings.
 
     Parameters
     ----------
-    include : List[str]
+    algo_list : List[str]
         List of strings referring to implemented model algorithms.
 
     Raises
@@ -41,7 +41,7 @@ def check_include(include: List[str]):
         raises a LookupError.
     """
     available_algos = get_available_algos()
-    for entry in include:
+    for entry in algo_list:
         if entry not in available_algos:
             raise LookupError(
                 f"'{entry}' was provided in the include parameter, but is not among the avaiable algorithms."
