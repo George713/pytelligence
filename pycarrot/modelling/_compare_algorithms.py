@@ -1,37 +1,17 @@
-from typing import List, Dict, Tuple, Optional
+from typing import List, Tuple, Optional
 
 import pandas as pd
 
 from ._train_model import train_model
-
-
-def _get_available_algos() -> List[str]:
-    """
-    Returns a list of strings where each string is the
-    abbreviation of an algorithm.
-    """
-    return [
-        "lr",
-        "dt",
-        "extratree",
-        "extratrees",
-        "rf",
-        "ridge",
-        "perceptron",
-        "passive-aggressive",
-        "knn",
-        "nb",
-        "linearsvc",
-        "rbfsvc",
-    ]
+from . import _internals
 
 
 def compare_algorithms(
     setup: dict,
-    include: List[str] = _get_available_algos(),
+    include: List[str] = _internals.get_available_algos(),
     sort: Optional[str] = None,
     return_models: bool = False,
-) -> Tuple[pd.DataFrame, Dict]:
+) -> Tuple[pd.DataFrame, List, List]:
     """
     Calculates various metrics for different machine learning
     algorithms.
@@ -56,13 +36,17 @@ def compare_algorithms(
     compare_df : pd.DataFrame
         sorted overview of algorithm performance
 
-    model_dict : dict
-        keys: algorithms string abbreviation
-        values: trained model instance
+    algo_list : list
+        List of algorithms ordered by sort metric.
+
+    model_list : list
+        Trained model instance if return_models == True.
+        Otherwise returns list of None.
     """
     # Checking inputs
-    _check_include(include)
-    _check_sort(sort)
+    _internals.check_include(include)
+    _internals.check_metric(metric=sort)
+    _internals.check_normalization(algo_list=include, normalization=setup.normalization)
 
     # Preparing empty compare_df and model_dict
     # with populating occuring later
@@ -86,7 +70,10 @@ def compare_algorithms(
             ascending=[False, True],
         ).reset_index(drop=True)
 
-    return compare_df, model_dict
+    algo_list = compare_df["algorithm"].to_list()
+    model_list = [model_dict[key] for key in compare_df["algorithm"]]
+
+    return compare_df, algo_list, model_list
 
 
 def _prepare_compare_df() -> pd.DataFrame:
@@ -109,27 +96,3 @@ def _prepare_compare_df() -> pd.DataFrame:
             "Fit time (s)",
         ]
     )
-
-
-def _check_include(include: List[str]):
-    available_algos = _get_available_algos()
-    for entry in include:
-        if entry not in available_algos:
-            raise LookupError(
-                f"'{entry}' was provided in the include parameter, but is not among the avaiable algorithms."
-            )
-
-
-def _check_sort(sort: Optional[str]):
-    if sort not in [
-        None,
-        "algorithm",
-        "accuracy",
-        "precision",
-        "recall",
-        "f1",
-        "roc_auc",
-    ]:
-        raise LookupError(
-            f"'{sort}' was provided as sort parameter, but is not among the avaiable metrics."
-        )

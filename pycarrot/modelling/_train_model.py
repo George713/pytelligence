@@ -1,4 +1,3 @@
-import functools
 from typing import Dict, List, Tuple, Optional
 
 import pandas as pd
@@ -22,12 +21,12 @@ from sklearn.tree import (
     ExtraTreeClassifier,
 )
 
-from .internals import Setup
+from . import _internals
 
 
 def train_model(
     algorithm: str,
-    setup: Setup,
+    setup: _internals.Setup,
     return_models: bool = False,
     feature_list: Optional[List[str]] = None,
 ) -> Tuple[object, pd.DataFrame]:

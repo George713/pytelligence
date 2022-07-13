@@ -13,20 +13,25 @@ class Setup:
 
     Attributes
     ----------
-    X_train: pd.DataFrame
+    X_train : pd.DataFrame
         Training dataset without target.
 
-    y_clf_train: pd.Series
+    y_clf_train : pd.Series
         Classifier target of training dataset.
 
-    y_clf_encoder: LabelEncoder
+    y_clf_encoder : LabelEncoder
         LabelEncoder used for encoding classification target.
 
-    prep_pipe: Pipeline
+    normalization : bool
+        Configuration flag indicating whether prepare_data performed
+        normalization.
+
+    prep_pipe : Pipeline
         Preprocessing pipeline used before model fitting/prediction.
     """
 
     X_train: pd.DataFrame
     y_clf_train: pd.Series
     y_clf_encoder: LabelEncoder
+    normalization: bool
     prep_pipe: Pipeline
