@@ -18,6 +18,6 @@ def test_modelling():
             "target_clf",
             "numeric_cols",
             "categorical_cols",
-            "normalization",
+            "feature_scaling",
         ]
     )

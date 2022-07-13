@@ -34,4 +34,4 @@ modelling:
     - 'worst symmetry'
     - 'worst fractal dimension'
   categorical_cols:
-  normalization: False
+  feature_scaling: False

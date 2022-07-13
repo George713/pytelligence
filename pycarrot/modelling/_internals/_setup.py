@@ -22,9 +22,9 @@ class Setup:
     y_clf_encoder : LabelEncoder
         LabelEncoder used for encoding classification target.
 
-    normalization : bool
+    feature_scaling : bool
         Configuration flag indicating whether prepare_data performed
-        normalization.
+        feature_scaling.
 
     prep_pipe : Pipeline
         Preprocessing pipeline used before model fitting/prediction.
@@ -33,5 +33,5 @@ class Setup:
     X_train: pd.DataFrame
     y_clf_train: pd.Series
     y_clf_encoder: LabelEncoder
-    normalization: bool
+    feature_scaling: bool
     prep_pipe: Pipeline

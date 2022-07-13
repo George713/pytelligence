@@ -72,20 +72,20 @@ def check_metric(metric: Optional[str]):
         )
 
 
-def check_normalization(algo_list: List[str], normalization: bool) -> None:
-    """Checks for normalization and writes note to logger.INFO if any of
-    the utilized algorithms would profit from normalization.
+def check_feature_scaling(algo_list: List[str], feature_scaling: bool) -> None:
+    """Checks for feature_scaling and writes note to logger.INFO if any of
+    the utilized algorithms would profit from feature_scaling.
 
     Parameters
     ----------
     algo_list : List[str]
         List of utilized algorithms.
 
-    normalization : bool
+    feature_scaling : bool
         Option documented in setup object. Specified in config.
     """
-    if not normalization:
+    if not feature_scaling:
         affected_algos = [algo for algo in algo_list if algo in ["lr"]]
         print(
-            f"The algorithms {affected_algos} work suboptimally without normalized data. Consider turning it on within the config."
+            f"The algorithms {affected_algos} work suboptimally without scaled features. Consider turning it on within the config."
         )

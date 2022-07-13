@@ -4,6 +4,6 @@ from ._utils import (
     get_available_algos,
     check_include,
     check_metric,
-    check_normalization,
+    check_feature_scaling,
 )
 from ._models import get_model_instance

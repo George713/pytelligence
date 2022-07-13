@@ -13,4 +13,4 @@ modelling:
     - 'breast'
     - 'breast-quad'
     - 'irradiat'
-  normalization: False
+  feature_scaling: False
