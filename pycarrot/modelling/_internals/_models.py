@@ -52,7 +52,7 @@ class ModelContainer(ABC):
     hyperparameters, sometimes with slight adjustments for the target audience
     of pycarrot, e.g. max_iter for LinearRegression and larger datasets.
 
-    `hyperparams` is either None or a dictionary, if the child class is
+    `tuning_params` is either None or a dictionary if the child class is
     instaniated with a trial object. Keys of that dictionary must mirrow
     the model's hyperparameter names and the values consist of optuna's
     trial suggestions. See example below.
@@ -63,13 +63,16 @@ class ModelContainer(ABC):
 
     Example
     -------
-    >>> self.base_model = LogisticRegression(solver="saga", max_iter=1000)
-    >>> self.hyperparams = (
+    >>> self.base_model = LogisticRegression(
+            solver="saga", max_iter=1000, penalty="elasticnet", l1_ratio=1
+        )
+    >>> self.tuning_params = (
             {
-                "C": trial.suggest_float("c", 1e-6, 1e2, log=True),
+                "C": trial.suggest_float("C", 1e-6, 1e2, log=True),
                 "penalty": trial.suggest_categorical(
-                    "penalty", ["l1", "l2", "elasticnet", "none"]
+                    "penalty", ["elasticnet", "none"]
                 ),
+                "l1_ratio": trial.suggest_uniform("l1_ratio", 0, 1),
             }
             if trial
             else None
@@ -79,14 +82,14 @@ class ModelContainer(ABC):
     @abstractmethod
     def __init__(self, trial: Optional[optuna.Trial] = None):
         self.base_model = None
-        self.hyperparams = None
+        self.tuning_params = None
 
     def get_model(self):
         """Returns model instance based on child class attributes."""
         return (
             self.base_model
-            if self.hyperparams is None
-            else self.base_model.set_params(**self.hyperparams)
+            if self.tuning_params is None
+            else self.base_model.set_params(**self.tuning_params)
         )
 
 
@@ -95,26 +98,29 @@ class ClfLinearRegression(ModelContainer):
     ModelContainer for classification algorithm `LinearRegression`.
 
     Hyperparameter choice:
-      "C": Inverse of regularization strength. In general strong impact.
-      "penalty": Norm of the penalty. Typically strong impact.
       "solver": Algorithm for optimization set to `saga` as it supports
          all penalty norms and is typically fastest on large datasets.
          Requires normalized features for good convergence. Typically
          only minor differences in model quality are observed by varying
          the solver.
+      "penalty": Norm of the penalty. Typically strong impact. Only includes
+         `elasticnet` as `l1` and `l2` are special cases covered by l1_ratio.
+         Forgoing the penalty (penalty=`none`) is covered by very large values
+         of `C`.
+      "C": Inverse of regularization strength. In general strong impact.
       "l1_ratio": If solver `elasticnet` is used, the l1_ratio determines
-         the combination ratio between l1 and l2. Set to 0.5 for equal
-         mixture of the two penalties.
+         the combination ratio between l1 and l2. 0 corresponds to pure `l1`
+         while a value of 1 results in pure `l2`.
     """
 
     def __init__(self, trial: Optional[optuna.Trial] = None):
-        self.base_model = LogisticRegression(solver="saga", max_iter=1000, l1_ratio=0.5)
-        self.hyperparams = (
+        self.base_model = LogisticRegression(
+            solver="saga", max_iter=1000, penalty="elasticnet", l1_ratio=1
+        )
+        self.tuning_params = (
             {
-                "C": trial.suggest_float("c", 1e-6, 1e2, log=True),
-                "penalty": trial.suggest_categorical(
-                    "penalty", ["l1", "l2", "elasticnet", "none"]
-                ),
+                "C": trial.suggest_float("C", 1e-6, 1e2, log=True),
+                "l1_ratio": trial.suggest_uniform("l1_ratio", 0, 1),
             }
             if trial
             else None

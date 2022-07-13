@@ -85,11 +85,10 @@ def tune_hyperparams(
         compare_df : pd.DataFrame
             sorted overview of algorithm performance
 
-        algo_list : list
-            List of algorithms ordered by sort metric.
-
         model_list : list
-            Trained model instance if return_models == True.
+            List of model instances trained on entire training data
+            using best hyperparameter combination found. List is ordered
+            by achieved metric. Only runs if return_models == True.
             Otherwise returns list of None.
     """
     # Checking inputs
@@ -103,6 +102,7 @@ def tune_hyperparams(
     model_dict = {}
 
     for algorithm in include:
+        # Preparation of tuning
         objective = _get_objective_function(
             algorithm=algorithm,
             optimize=optimize,
@@ -111,7 +111,11 @@ def tune_hyperparams(
         study = optuna.create_study(
             study_name=f"study_{algorithm}", direction="maximize"
         )
+
+        # Tuning
         study.optimize(objective, n_trials=n_trials)
+
+        # Aggreration of results
         metric, hyperparams = _get_best_result(study)
         compare_df.loc[len(compare_df)] = [
             algorithm,
@@ -119,7 +123,18 @@ def tune_hyperparams(
             hyperparams,
         ]
 
-    return compare_df, [], []
+        # Training model on entire dataset
+        if return_models:
+            model_dict[algorithm] = (
+                _internals.get_model_instance(algorithm=algorithm)
+                .set_params(**hyperparams)
+                .fit(setup.X_train, setup.y_clf_train)
+            )
+
+    compare_df.sort_values(by="metric", ascending=False).reset_index(drop=True)
+    model_list = [model_dict[key] for key in compare_df["algorithm"]]
+
+    return compare_df, model_list
 
 
 def _get_objective_function(
@@ -159,6 +174,7 @@ def _get_objective_function(
             Mean metric of all folds.
         """
         model = _internals.get_model_instance(algorithm=algorithm, trial=trial)
+        trial.set_user_attr("hyperparams", model.get_params())
         cv_scores = cross_val_score(
             model,
             setup.X_train,
@@ -187,4 +203,4 @@ def _get_best_result(study: optuna.Study) -> Tuple[float, dict]:
         metric : float
         hyperparams : dict
     """
-    return study.best_trial.values[0], study.best_trial.params
+    return study.best_trial.values[0], study.best_trial.user_attrs["hyperparams"]
