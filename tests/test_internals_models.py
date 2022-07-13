@@ -19,7 +19,7 @@ def test_default_hyperparams():
     default_params = default_model.get_params()
     assert default_params["solver"] == "saga"
     assert default_params["max_iter"] == 1000
-    assert default_params["l1_ratio"] == 0.5
+    assert default_params["l1_ratio"] == 1
 
 
 def test_adjusted_hyperparams():
