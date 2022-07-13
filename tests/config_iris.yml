@@ -1,0 +1,10 @@
+# Config for iris dataset
+modelling:
+  target_clf: 'target'
+  numeric_cols:
+    - "sepal width (cm)"
+    - "sepal length (cm)"
+    - "petal width (cm)"
+    - "petal length (cm)"
+  categorical_cols:
+  feature_scaling: False

@@ -7,23 +7,9 @@ data = load_iris(as_frame=True)
 df_clf = pd.concat([data.data, data.target], axis=1)
 df_clf = df_clf.query("target < 2").reset_index(drop=True)
 
-config = {
-    "modelling": {
-        "target_clf": "target",
-        "numeric_cols": [
-            "sepal width (cm)",
-            "sepal length (cm)",
-            "petal width (cm)",
-            "petal length (cm)",
-        ],
-        "categorical_cols": [],
-        "feature_scaling": False,
-    }
-}
-
 prepare_data_result = pc.modelling.prepare_data(
     train_data=df_clf,
-    config=config,
+    config_path="./tests/config_iris.yml",
 )
 setup, _, _ = prepare_data_result
 

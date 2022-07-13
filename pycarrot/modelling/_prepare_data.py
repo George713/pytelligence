@@ -1,5 +1,7 @@
 from typing import List, Tuple
 
+
+import yaml
 import pandas as pd
 from pyparsing import Optional
 from sklearn.preprocessing import LabelEncoder
@@ -9,7 +11,7 @@ from . import _internals
 
 def prepare_data(
     train_data: pd.DataFrame,
-    config: dict,
+    config_path: str,
 ) -> Tuple[_internals.Setup, pd.DataFrame, pd.Series]:
     """Prepares data by
       1) One-Hot-Encoding remaining categorical features
@@ -19,8 +21,8 @@ def prepare_data(
     ----------
     train_data : pd.DataFrame
         Dataframe provided by user. Must contain columns specified in config.
-    config : dict
-        Loaded config containing input features and preparational options.
+    config_path : dict
+        Path to config containing input features and preparational options.
 
     Returns
     -------
@@ -30,6 +32,8 @@ def prepare_data(
         X_sample & y_sample showing what the data looks like after
         preparation.
     """
+    # Loading config
+    config = _init_config(path=config_path)
 
     # Checking input
     _check_clf_target(train_data, config["modelling"]["target_clf"])
@@ -63,6 +67,14 @@ def prepare_data(
         X_train.head(),
         y_train.head(),
     )
+
+
+def _init_config(path: str):
+    with open(path, "r") as stream:
+        try:
+            return yaml.safe_load(stream)
+        except yaml.YAMLError as exc:
+            print(exc)
 
 
 def _check_clf_target(train_data: pd.DataFrame, clf_col: str = None) -> None:

@@ -1,6 +1,6 @@
 import pycarrot as pc
 
-config = pc.init_config("./tests/config_test.yml")
+config = pc.modelling._prepare_data._init_config(path="./tests/config_test.yml")
 
 
 def test_init_config():

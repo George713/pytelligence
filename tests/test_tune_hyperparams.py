@@ -14,15 +14,13 @@ df_clf = pd.DataFrame(
     }
 )
 
-config = pc.init_config("./tests/config_test.yml")
-
 setup, _, _ = pc.modelling.prepare_data(
     train_data=df_clf,
-    config=config,
+    config_path="./tests/config_test.yml",
 )
 
 objective_fn = pc.modelling._tune_hyperparams._get_objective_function(
-    algorithm="lr", optimize="f1", setup=setup
+    algorithm="lr", optimize="f1", X=setup.X_train, y=setup.y_clf_train
 )
 
 study = optuna.create_study(direction="maximize")

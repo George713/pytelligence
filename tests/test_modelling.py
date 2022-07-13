@@ -4,8 +4,6 @@ from sklearn.model_selection import cross_validate
 
 import pycarrot as pc
 
-config = pc.init_config("./tests/config_test.yml")
-
 df_clf = pd.DataFrame(
     data={
         "num_col": [i for i in range(100)],
@@ -16,7 +14,7 @@ df_clf = pd.DataFrame(
 
 prepare_data_result = pc.modelling.prepare_data(
     train_data=df_clf,
-    config=config,
+    config_path="./tests/config_test.yml",
 )
 setup, _, _ = prepare_data_result
 
