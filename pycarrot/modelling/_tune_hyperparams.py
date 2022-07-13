@@ -49,7 +49,7 @@ def tune_hyperparams(
 
     Example
     -------
-    >>> compare_df, algo_list, model_list = (
+    >>> compare_df, model_list = (
                 pc.modelling.tune_hyperparams(
                     setup=setup,
                     include=["lr", "knn"],
@@ -132,7 +132,9 @@ def tune_hyperparams(
                 .fit(setup.X_train, setup.y_clf_train)
             )
 
-    compare_df.sort_values(by="metric", ascending=False).reset_index(drop=True)
+    compare_df = compare_df.sort_values(by="metric", ascending=False).reset_index(
+        drop=True
+    )
     model_list = [model_dict[key] for key in compare_df["algorithm"]]
 
     return compare_df, model_list

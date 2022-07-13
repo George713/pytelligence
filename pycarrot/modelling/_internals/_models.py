@@ -13,6 +13,7 @@ from abc import ABC, abstractmethod
 from typing import Optional
 from sklearn.linear_model import LogisticRegression
 import optuna
+from sklearn.naive_bayes import GaussianNB
 
 
 def get_model_instance(algorithm: str, trial: Optional[optuna.Trial] = None):
@@ -36,7 +37,11 @@ def get_model_instance(algorithm: str, trial: Optional[optuna.Trial] = None):
         hyperparameters depending on a trial-object being provided.
     """
     if algorithm == "lr":
-        return ClfLinearRegression(trial=trial).get_model()
+        algo = ClfLinearRegression
+    elif algorithm == "nb":
+        algo = ClfGaussianNB
+
+    return algo(trial=trial).get_model()
 
 
 class ModelContainer(ABC):
@@ -97,6 +102,8 @@ class ClfLinearRegression(ModelContainer):
     """
     ModelContainer for classification algorithm `LinearRegression`.
 
+    See: https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html
+
     Hyperparameter choice:
       "solver": Algorithm for optimization set to `saga` as it supports
          all penalty norms and is typically fastest on large datasets.
@@ -121,6 +128,31 @@ class ClfLinearRegression(ModelContainer):
             {
                 "C": trial.suggest_float("C", 1e-6, 1e2, log=True),
                 "l1_ratio": trial.suggest_uniform("l1_ratio", 0, 1),
+            }
+            if trial
+            else None
+        )
+
+
+class ClfGaussianNB(ModelContainer):
+    """
+    ModelContainer for classification algorithm `GaussianNB`.
+
+    See: https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html
+
+    Hyperparameter choice:
+      "var_smoothing": Portion of the largest variance of all features
+      that is added to variances for calculation stability. Only tunable
+      feature.
+    """
+
+    def __init__(self, trial: Optional[optuna.Trial] = None):
+        self.base_model = GaussianNB()
+        self.tuning_params = (
+            {
+                "var_smoothing": trial.suggest_float(
+                    "var_smoothing", 1e-12, 1e0, log=True
+                ),
             }
             if trial
             else None
