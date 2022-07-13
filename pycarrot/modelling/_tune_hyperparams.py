@@ -28,7 +28,7 @@ Example
             )
     )
 """
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 import pandas as pd
 import numpy as np
@@ -43,6 +43,7 @@ def tune_hyperparams(
     include: List[str],
     optimize: str,
     n_trials: int = 20,
+    feature_list: Optional[List[str]] = None,
     return_models: bool = False,
 ) -> Tuple[pd.DataFrame, list, list]:
     """Tunes the algorithms provided in the `include` parameter.
@@ -74,6 +75,11 @@ def tune_hyperparams(
     n_trials : int, optional
         Number of hyperparameter combinations to evaluate,
         by default 20
+
+    feature_list: Optional[List[str]] = None
+        If provided, will tune the model with provided
+        feature list. Useful after reduce_feature_space()
+        has been evaluated.
 
     return_models : bool, optional
         Flag for training models on the entire dateset using the
@@ -109,7 +115,8 @@ def tune_hyperparams(
         objective = _get_objective_function(
             algorithm=algorithm,
             optimize=optimize,
-            setup=setup,
+            X=setup.X_train[feature_list] if feature_list else setup.X_train,
+            y=setup.y_clf_train,
         )
         study = optuna.create_study(
             study_name=f"study_{algorithm}", direction="maximize"
@@ -143,7 +150,7 @@ def tune_hyperparams(
 
 
 def _get_objective_function(
-    algorithm: str, optimize: str, setup: _internals.Setup
+    algorithm: str, optimize: str, X: pd.DataFrame, y: pd.Series
 ) -> object:
     """Returns model specific objective function for usage in optuna's
     stduy.optimize() function.
@@ -156,8 +163,11 @@ def _get_objective_function(
     optimize : str
         Metric to optimize for.
 
-    setup : _internals.Setup
-        Setup object containing training data.
+    X : pd.DataFrame
+        Dataframe containing training features.
+
+    y : pd.Series
+        Series containing target variable.
 
     Returns
     -------
@@ -182,8 +192,8 @@ def _get_objective_function(
         trial.set_user_attr("hyperparams", model.get_params())
         cv_scores = cross_val_score(
             model,
-            setup.X_train,
-            setup.y_clf_train,
+            X,
+            y,
             scoring=optimize,
             n_jobs=-1,
             error_score="raise",
