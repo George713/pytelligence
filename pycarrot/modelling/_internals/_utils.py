@@ -70,3 +70,22 @@ def check_metric(metric: Optional[str]):
         raise LookupError(
             f"'{metric}' was provided as sort parameter, but is not among the avaiable metrics."
         )
+
+
+def check_normalization(algo_list: List[str], normalization: bool) -> None:
+    """Checks for normalization and writes note to logger.INFO if any of
+    the utilized algorithms would profit from normalization.
+
+    Parameters
+    ----------
+    algo_list : List[str]
+        List of utilized algorithms.
+
+    normalization : bool
+        Option documented in setup object. Specified in config.
+    """
+    if not normalization:
+        affected_algos = [algo for algo in algo_list if algo in ["lr"]]
+        print(
+            f"The algorithms {affected_algos} work suboptimally without normalized data. Consider turning it on within the config."
+        )

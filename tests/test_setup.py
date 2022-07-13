@@ -8,6 +8,7 @@ setup = Setup(
     X_train=pd.DataFrame(),
     y_clf_train=pd.Series(dtype="int"),
     y_clf_encoder=LabelEncoder(),
+    normalization=True,
     prep_pipe=Pipeline(steps=[]),
 )
 
@@ -19,6 +20,7 @@ def test_class_attributes():
             "X_train",
             "y_clf_train",
             "y_clf_encoder",
+            "normalization",
             "prep_pipe",
         ]
     )

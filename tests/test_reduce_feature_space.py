@@ -17,6 +17,7 @@ config = {
             "petal length (cm)",
         ],
         "categorical_cols": [],
+        "normalization": False,
     }
 }
 

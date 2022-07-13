@@ -57,6 +57,7 @@ def prepare_data(
             X_train=X_train,
             y_clf_train=y_train,
             y_clf_encoder=y_clf_encoder,
+            normalization=config["modelling"]["normalization"],
             prep_pipe=prep_pipe,
         ),
         X_train.head(),

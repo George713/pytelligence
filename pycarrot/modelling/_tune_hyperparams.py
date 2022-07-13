@@ -94,14 +94,15 @@ def tune_hyperparams(
     # Checking inputs
     _internals.check_include(algo_list=include)
     _internals.check_metric(metric=optimize)
+    _internals.check_normalization(algo_list=include, normalization=setup.normalization)
 
     # Preparing empty compare_df and model_dict
     # with populating occuring later
     compare_df = pd.DataFrame({}, columns=["algorithm", "metric", "hyperparams"])
-    # compare_df = _prepare_compare_df()
     model_dict = {}
 
     for algorithm in include:
+
         # Preparation of tuning
         objective = _get_objective_function(
             algorithm=algorithm,

@@ -46,6 +46,7 @@ def compare_algorithms(
     # Checking inputs
     _internals.check_include(include)
     _internals.check_metric(metric=sort)
+    _internals.check_normalization(algo_list=include, normalization=setup.normalization)
 
     # Preparing empty compare_df and model_dict
     # with populating occuring later
