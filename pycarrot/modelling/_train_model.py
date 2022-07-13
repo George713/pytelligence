@@ -29,6 +29,7 @@ def train_model(
     setup: _internals.Setup,
     return_models: bool = False,
     feature_list: Optional[List[str]] = None,
+    hyperparams: Optional[dict] = None,
 ) -> Tuple[object, pd.DataFrame]:
     """
     Trains a model instance using specified algorithm and
@@ -52,6 +53,10 @@ def train_model(
         feature list. Used within 'reduce_feature_space'
         functionality.
 
+    hyperparams : Optional[dict]
+        Hyperparameters to use with the given algorithm.
+        Default `None` will use standard hyperparameters.
+
     Returns
     -------
     model : trained model instance
@@ -61,7 +66,11 @@ def train_model(
         model achieved
     """
     # Instantiate model instance
-    model = _get_unfitted_model(algorithm)
+    model = _internals.get_model_instance(
+        algorithm=algorithm,
+        trial=None,
+        hyperparams=hyperparams,
+    )
 
     # Cross-validate model
     X_train = setup.X_train[feature_list] if feature_list else setup.X_train
@@ -93,38 +102,38 @@ def train_model(
 
     return model, metrics
 
+# DEPRECATED. CAN BE DELETED AFTER TESTING
+# def _get_unfitted_model(algorithm: str) -> object:
+#     """
+#     Returns an unfitted model instance of specified
+#     algorithm.
+#     """
+#     if algorithm == "lr":
+#         return LogisticRegression()
+#     if algorithm == "dt":
+#         return DecisionTreeClassifier()
+#     if algorithm == "extratree":
+#         return ExtraTreeClassifier()
+#     if algorithm == "extratrees":
+#         return ExtraTreesClassifier()
+#     if algorithm == "rf":
+#         return RandomForestClassifier()
+#     if algorithm == "ridge":
+#         return RidgeClassifier()
+#     if algorithm == "perceptron":
+#         return Perceptron()
+#     if algorithm == "passive-aggressive":
+#         return PassiveAggressiveClassifier()
+#     if algorithm == "knn":
+#         return KNeighborsClassifier()
+#     if algorithm == "nb":
+#         return GaussianNB()
+#     if algorithm == "linearsvc":
+#         return LinearSVC()
+#     if algorithm == "rbfsvc":
+#         return SVC()
 
-def _get_unfitted_model(algorithm: str) -> object:
-    """
-    Returns an unfitted model instance of specified
-    algorithm.
-    """
-    if algorithm == "lr":
-        return LogisticRegression()
-    if algorithm == "dt":
-        return DecisionTreeClassifier()
-    if algorithm == "extratree":
-        return ExtraTreeClassifier()
-    if algorithm == "extratrees":
-        return ExtraTreesClassifier()
-    if algorithm == "rf":
-        return RandomForestClassifier()
-    if algorithm == "ridge":
-        return RidgeClassifier()
-    if algorithm == "perceptron":
-        return Perceptron()
-    if algorithm == "passive-aggressive":
-        return PassiveAggressiveClassifier()
-    if algorithm == "knn":
-        return KNeighborsClassifier()
-    if algorithm == "nb":
-        return GaussianNB()
-    if algorithm == "linearsvc":
-        return LinearSVC()
-    if algorithm == "rbfsvc":
-        return SVC()
-
-    raise LookupError(f"'{algorithm}' is not among the avaiable algorithms.")
+#     raise LookupError(f"'{algorithm}' is not among the avaiable algorithms.")
 
 
 def _aggregate_metrics(cv_results: Dict, algorithm: str) -> pd.DataFrame:

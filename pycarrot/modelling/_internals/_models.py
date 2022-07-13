@@ -16,11 +16,21 @@ import optuna
 from sklearn.naive_bayes import GaussianNB
 
 
-def get_model_instance(algorithm: str, trial: Optional[optuna.Trial] = None):
+def get_model_instance(
+    algorithm: str,
+    trial: Optional[optuna.Trial] = None,
+    hyperparams: Optional[dict] = None,
+):
     """Returns model instance for `algorithm`.
 
     When a `trial` instance is provided, the hyperparams of the
     model instance are set using optuna's trial object.
+
+    If `hyperparams` are provided, the algorithm is configured with
+    these parameters.
+
+    A simultaneous occurence of `trial` and `hyperparams` is not
+    accounted for and will raise an error.
 
     Parameters
     ----------
@@ -30,18 +40,44 @@ def get_model_instance(algorithm: str, trial: Optional[optuna.Trial] = None):
     trial : Optional[optuna.Trial]
         Optuna's trial object used to specify hyperparameters to use.
 
+    hyperparams : Optional[dict]
+        Hyperparameters to use with the given algorithm.
+        Default `None` will use standard hyperparameters.
+
     Returns
     -------
     model_instance
         A model instance based on `algorithm` with base or adjusted
         hyperparameters depending on a trial-object being provided.
     """
+    _check_correct_params(trial, hyperparams)
+
     if algorithm == "lr":
         algo = ClfLinearRegression
     elif algorithm == "nb":
         algo = ClfGaussianNB
+    else:
+        raise LookupError(f"'{algorithm}' is not among the avaiable algorithms.")
 
-    return algo(trial=trial).get_model()
+    return (
+        algo(trial=trial).get_model().set_params(**hyperparams)
+        if hyperparams
+        else algo(trial=trial).get_model()
+    )
+
+
+def _check_correct_params(
+    trial: Optional[optuna.Trial] = None,
+    hyperparams: Optional[dict] = None,
+) -> None:
+    """Raises an error if both `trial` and `hyperparams` are not `None`."""
+    if (trial is not None) & (hyperparams is not None):
+        raise ValueError(
+            """A model instance was to be instantiated with specific hyperparameters
+               and tunable hyperparameters. This combination should not be reached.
+               Please reach out to a maintainer.
+        """
+        )
 
 
 class ModelContainer(ABC):

@@ -9,6 +9,10 @@ study = optuna.create_study(direction="maximize")
 trial = study.ask()
 adjusted_model = pc.modelling._internals.get_model_instance(algorithm="lr", trial=trial)
 
+manually_adj_model = pc.modelling._internals.get_model_instance(
+    algorithm="lr", hyperparams={"l1_ratio": 0.2}
+)
+
 
 def test_return_type_get_model_instance():
     """Checks return type of get_model_instance()."""
@@ -33,3 +37,8 @@ def test_adjusted_hyperparams():
     """
     adjusted_params = adjusted_model.get_params()
     assert adjusted_params["C"] != 1
+
+
+def test_manually_adjusted_hyperparams():
+    manually_adj_params = manually_adj_model.get_params()
+    assert manually_adj_params["l1_ratio"] == 0.2

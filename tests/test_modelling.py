@@ -20,13 +20,11 @@ prepare_data_result = pc.modelling.prepare_data(
 )
 setup, _, _ = prepare_data_result
 
-compare_algorithms_result = pc.modelling.compare_algorithms(
-    setup,
-)
+compare_algorithms_result = pc.modelling.compare_algorithms(setup)
 compare_df, algo_list, model_list = compare_algorithms_result
 
 
-unfitted_model = pc.modelling._train_model._get_unfitted_model("lr")
+unfitted_model = pc.modelling._internals.get_model_instance("lr")
 
 X_train, y_train = setup.X_train, setup.y_clf_train
 
@@ -88,14 +86,6 @@ def test_train_model_return_type():
 
 def test_get_unfitted_model():
     assert type(unfitted_model) == LogisticRegression
-
-
-def test_get_unfitted_model_error():
-    try:
-        result = pc.modelling._train_model._get_unfitted_model("unknown_algo")
-    except Exception as e:
-        result = e
-    assert type(result) == LookupError
 
 
 def test_agg_metrics_type():

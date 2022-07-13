@@ -12,17 +12,17 @@ def get_available_algos() -> List[str]:
     """
     return [
         "lr",
-        "dt",
-        "extratree",
-        "extratrees",
-        "rf",
-        "ridge",
-        "perceptron",
-        "passive-aggressive",
-        "knn",
+        # "dt",
+        # "extratree",
+        # "extratrees",
+        # "rf",
+        # "ridge",
+        # "perceptron",
+        # "passive-aggressive",
+        # "knn",
         "nb",
-        "linearsvc",
-        "rbfsvc",
+        # "linearsvc",
+        # "rbfsvc",
     ]
 
 

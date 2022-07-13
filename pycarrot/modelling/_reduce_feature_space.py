@@ -1,4 +1,5 @@
-from typing import Tuple, List
+from typing import Optional, Tuple, List
+
 
 from ._train_model import train_model
 from . import _internals
@@ -10,6 +11,7 @@ def reduce_feature_space(
     metric: str,
     reference_metric: float,
     acceptable_loss: float,
+    hyperparams: Optional[dict] = None,
 ):
     """
     Reduces the feature space used for model training
@@ -45,6 +47,10 @@ def reduce_feature_space(
         of acceptable_loss * reference_metric is undercut,
         the feature space reduction is reduced.
 
+    hyperparams : Optional[dict]
+        Hyperparameters to use with the given algorithm.
+        Default `None` will use standard hyperparameters.
+
     Returns
     -------
     best_feature_list : List[str]
@@ -58,10 +64,11 @@ def reduce_feature_space(
     # Iteratively remove features
     while (threshold <= new_metric) & (len(feature_list) > 1):
         (worst_feature, new_metric) = _find_worst_feature(
-            setup,
-            algorithm,
-            metric,
-            feature_list,
+            setup=setup,
+            algorithm=algorithm,
+            metric=metric,
+            feature_list=feature_list,
+            hyperparams=hyperparams,
         )
         feature_list.remove(worst_feature)
         print(f"New metric: {new_metric:.3}, worst feature: {worst_feature}")
@@ -86,6 +93,7 @@ def _find_worst_feature(
     algorithm: str,
     metric: str,
     feature_list: List[str],
+    hyperparams: Optional[dict] = None,
 ) -> Tuple[str, float]:
     """
     Finds worst feature given a specific algorithm and
@@ -111,6 +119,10 @@ def _find_worst_feature(
     metric : str
         Metric to use for evaluating model performance.
 
+    hyperparams : Optional[dict]
+        Hyperparameters to use with the given algorithm.
+        Default `None` will use standard hyperparameters.
+
     Returns
     -------
     worst_feature: str
@@ -129,6 +141,7 @@ def _find_worst_feature(
             algorithm,
             setup,
             feature_list=[feat for feat in feature_list if feat != feature],
+            hyperparams=hyperparams,
         )
         removed_feature.append(feature)
         new_metric.append(metrics[metric].values[0])

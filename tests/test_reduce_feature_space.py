@@ -29,10 +29,19 @@ setup, _, _ = prepare_data_result
 
 result = pc.modelling.reduce_feature_space(
     setup,
-    algorithm="perceptron",
+    algorithm="lr",
     metric="accuracy",
     reference_metric=1.0,
     acceptable_loss=0.6,
+)
+
+result_w_hyperparams = pc.modelling.reduce_feature_space(
+    setup,
+    algorithm="lr",
+    metric="accuracy",
+    reference_metric=1.0,
+    acceptable_loss=0.6,
+    hyperparams={"l1_ratio": 0.2},
 )
 
 
@@ -41,5 +50,8 @@ def test_fn_exists():
 
 
 def test_return_types():
-    print(result)
     assert type(result) == list
+
+
+def test_return_types():
+    assert type(result_w_hyperparams) == list
