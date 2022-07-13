@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import optuna
+from sklearn.linear_model import LogisticRegression
 
 import pycarrot as pc
 
@@ -28,7 +29,7 @@ study = optuna.create_study(direction="maximize")
 trial = study.ask()
 # Preparation End
 
-compare_df, algo_list, model_list = pc.modelling.tune_hyperparams(
+compare_df, model_list = pc.modelling.tune_hyperparams(
     setup=setup,
     include=["lr"],
     optimize="f1",
@@ -40,7 +41,6 @@ compare_df, algo_list, model_list = pc.modelling.tune_hyperparams(
 def test_return_types():
     """Tests return types of tune_hyperparams()."""
     assert type(compare_df) == pd.DataFrame
-    assert type(algo_list) == list
     assert type(model_list) == list
 
 
@@ -57,3 +57,7 @@ def test_return_type_of_objective_function():
 
 def test_columns_of_returned_compare_df():
     assert set(compare_df.columns) == set(["algorithm", "metric", "hyperparams"])
+
+
+def test_type_of_1st_entry_in_model_list():
+    assert type(model_list[0]) == LogisticRegression
