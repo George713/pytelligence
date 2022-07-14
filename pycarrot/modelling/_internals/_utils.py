@@ -7,6 +7,10 @@ from typing import List, Optional
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 
+import logging
+
+logger = logging.getLogger(f"stream.{__name__}")
+
 
 def get_available_algos() -> List[str]:
     """
@@ -97,6 +101,7 @@ def check_feature_scaling(algo_list: List[str], feature_scaling: bool) -> None:
     """
     if not feature_scaling:
         affected_algos = [algo for algo in algo_list if algo in ["lr"]]
-        print(
-            f"The algorithms {affected_algos} work suboptimally without scaled features. Consider turning it on within the config."
-        )
+        if len(affected_algos) > 0:
+            logger.warning(
+                f"The algorithms {affected_algos} work suboptimally without scaled features. Consider turning it on within the config."
+            )

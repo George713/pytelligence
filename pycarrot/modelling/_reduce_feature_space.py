@@ -4,6 +4,10 @@ from typing import Optional, Tuple, List
 from ._train_model import train_model
 from . import _internals
 
+import logging
+
+logger = logging.getLogger(f"stream.{__name__}")
+
 
 def reduce_feature_space(
     setup: _internals.Setup,
@@ -55,11 +59,18 @@ def reduce_feature_space(
     -------
     best_feature_list : List[str]
     """
+    logger.info("%%% REDUCING FEATURE SPACE")
     # Initiate reference values
     threshold = acceptable_loss * reference_metric
     feature_list = setup.X_train.columns.to_list()
     best_feature_list = feature_list[:]
     new_metric = reference_metric
+
+    logger.info(f"Algorithm selected for feature space reduction: {algorithm}")
+    logger.info(f"Metric to optimize for: {metric}")
+    logger.info(
+        f"Minimum acceptable metric: {threshold:.3} or {acceptable_loss} * reference metric ({reference_metric:.3})"
+    )
 
     # Iteratively remove features
     while (threshold <= new_metric) & (len(feature_list) > 1):
@@ -71,19 +82,23 @@ def reduce_feature_space(
             hyperparams=hyperparams,
         )
         feature_list.remove(worst_feature)
-        print(f"New metric: {new_metric:.3}, worst feature: {worst_feature}")
+        logger.info(
+            f"Current metric: {new_metric:.3}, removing worst feature: {worst_feature}"
+        )
 
         # Update reference_metric and threshold if
         # reference_metric was improved upon
         if new_metric > reference_metric:
             reference_metric = new_metric
-            threshold = acceptable_loss * reference_metric
-            print(f"Updating reference metric...")
+            logger.info(f"Updating reference metric...")
 
         # Update best_feature_list if metric is equal to
         # reference_metric
         if new_metric == reference_metric:
             best_feature_list = feature_list[:]
+
+    logger.info(f"Best {metric} score found: {reference_metric:.3}")
+    logger.info(f"Feature list for best score: {best_feature_list}")
 
     return best_feature_list
 

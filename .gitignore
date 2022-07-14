@@ -12,3 +12,6 @@ tests/.pytest_cache
 # Misc
 .vscode
 .python-version
+
+# Logs
+logs/*

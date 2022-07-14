@@ -37,6 +37,11 @@ import optuna
 
 from . import _internals
 
+import logging
+
+
+logger = logging.getLogger(f"stream.{__name__}")
+
 
 def tune_hyperparams(
     setup: _internals.Setup,
@@ -97,6 +102,8 @@ def tune_hyperparams(
             by achieved metric. Only runs if return_models == True.
             Otherwise returns list of None.
     """
+    logger.info("%%% TUNING HYPERPARAMETERS")
+
     # Checking inputs
     _internals.check_include(algo_list=include)
     _internals.check_metric(metric=optimize)
@@ -109,8 +116,11 @@ def tune_hyperparams(
     compare_df = pd.DataFrame({}, columns=["algorithm", "metric", "hyperparams"])
     model_dict = {}
 
-    for algorithm in include:
+    logger.info(f"Algorithms selected for tuning: {include}")
+    logger.info(f"Metric to optimize for: {optimize}")
+    logger.info(f"Trials per algorithm: {n_trials}")
 
+    for algorithm in include:
         # Preparation of tuning
         objective = _get_objective_function(
             algorithm=algorithm,
@@ -145,6 +155,7 @@ def tune_hyperparams(
         drop=True
     )
     model_list = [model_dict[key] for key in compare_df["algorithm"]]
+    logger.info(compare_df[["algorithm", "metric"]])
 
     return compare_df, model_list
 

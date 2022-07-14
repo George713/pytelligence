@@ -2,6 +2,9 @@ from sklearn.pipeline import Pipeline
 from sklearn.base import BaseEstimator, TransformerMixin
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
+import logging
+
+logger = logging.getLogger(f"stream.{__name__}")
 
 
 def get_prep_pipeline() -> Pipeline:
@@ -15,7 +18,10 @@ def get_prep_pipeline() -> Pipeline:
     Pipeline
         Unfitted preprocessing pipeline.
     """
-    return Pipeline(steps=[("ohe", OHE())])
+    prep_pipe = Pipeline(steps=[("ohe", OHE())])
+    step_names = [step[0] for step in prep_pipe.steps]
+    logger.info(f"Created preprocessing pipeline with following steps: {step_names}")
+    return prep_pipe
 
 
 class OHE(BaseEstimator, TransformerMixin):

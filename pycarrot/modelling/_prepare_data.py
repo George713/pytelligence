@@ -1,12 +1,14 @@
 from typing import List, Tuple
+import logging
 
 
 import yaml
 import pandas as pd
-from pyparsing import Optional
 from sklearn.preprocessing import LabelEncoder
 
 from . import _internals
+
+logger = logging.getLogger(f"stream.{__name__}")
 
 
 def prepare_data(
@@ -32,6 +34,7 @@ def prepare_data(
         X_sample & y_sample showing what the data looks like after
         preparation.
     """
+    logger.info("%%% PREPARING DATA")
     # Loading config
     config = _init_config(path=config_path)
 
@@ -52,6 +55,7 @@ def prepare_data(
 
     # Composing X_train
     X_train = prep_pipe.fit_transform(train_data[original_features])
+    logger.info("Applied preprocessing transformations")
 
     # Encoding target_clf
     y_train, y_clf_encoder = _encode_y_train(train_data[target_clf])
@@ -72,7 +76,9 @@ def prepare_data(
 def _init_config(path: str):
     with open(path, "r") as stream:
         try:
-            return yaml.safe_load(stream)
+            config = yaml.safe_load(stream)
+            logger.info(f"Read {path}: \n {config}")
+            return config
         except yaml.YAMLError as exc:
             print(exc)
 
@@ -157,7 +163,9 @@ def _encode_y_train(y: pd.Series) -> Tuple[pd.Series, LabelEncoder]:
     else:
         le = LabelEncoder().fit(y)
         y_trans = pd.Series(le.transform(y), name=y.name)
-        # logger.info(f"Encoded target variable using classes: {*[(i, class_) for i, class_ in enumerate(le.classes_)]}")
+        logger.info(
+            f"Encoded target variable using classes: {[(i, class_) for i, class_ in enumerate(le.classes_)]}"
+        )
         return pd.to_numeric(y_trans, downcast="integer"), le
 
 

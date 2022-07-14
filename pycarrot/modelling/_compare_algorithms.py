@@ -5,6 +5,11 @@ import pandas as pd
 from ._train_model import train_model
 from . import _internals
 
+import logging
+
+
+logger = logging.getLogger(f"stream.{__name__}")
+
 
 def compare_algorithms(
     setup: dict,
@@ -43,6 +48,8 @@ def compare_algorithms(
         Trained model instance if return_models == True.
         Otherwise returns list of None.
     """
+    logger.info("%%% COMPARING ALGORITHMS")
+
     # Checking inputs
     _internals.check_include(include)
     _internals.check_metric(metric=sort)
@@ -57,6 +64,7 @@ def compare_algorithms(
 
     # Training models
     for algorithm in include:
+        logger.info(f"Evaluating {algorithm}...")
         model, metrics = train_model(
             algorithm,
             setup,
