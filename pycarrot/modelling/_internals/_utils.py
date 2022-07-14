@@ -4,14 +4,28 @@ Contains utilty functionality used by various modules.
 
 from typing import List, Optional
 
+from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import GaussianNB
+
 
 def get_available_algos() -> List[str]:
     """
     Returns a list of strings where each string is the
     abbreviation of an algorithm.
     """
-    return [
-        "lr",
+    return list(get_algo_dict().keys())
+
+
+def get_algo_dict() -> dict:
+    """
+    Returns a dictionary with keys being algorithm abbreviations
+    (strings) and values being the callables of the algorithms.
+    """
+    return {
+        "lr": LogisticRegression,
+        "nb": GaussianNB,
+        # "linearsvc",
+        # "rbfsvc",
         # "dt",
         # "extratree",
         # "extratrees",
@@ -20,10 +34,7 @@ def get_available_algos() -> List[str]:
         # "perceptron",
         # "passive-aggressive",
         # "knn",
-        "nb",
-        # "linearsvc",
-        # "rbfsvc",
-    ]
+    }
 
 
 def check_include(algo_list: List[str]):
