@@ -7,6 +7,7 @@ import datetime
 from typing import Optional
 import joblib
 from pathlib import Path
+from copy import deepcopy
 
 from sklearn.pipeline import Pipeline
 
@@ -52,8 +53,11 @@ def export_model(setup: _internals.Setup, model, target_dir: str) -> None:
 
 def _combine_pipeline_and_model(prep_pipe: Pipeline, model) -> Pipeline:
     """Adds `model` as last step to `prep_pipe`."""
-    prep_pipe.steps.append(("model", model))
-    return prep_pipe
+    # Making deep copy, so that the model-step is not added to the
+    # original pipeline object.
+    prep_pipe_copy = deepcopy(prep_pipe)
+    prep_pipe_copy.steps.append(("model", model))
+    return prep_pipe_copy
 
 
 def _get_export_name(target_dir: str, model) -> str:
