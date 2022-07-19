@@ -4,6 +4,7 @@ preprocessing pipeline.
 """
 import abc
 import datetime
+import logging
 from copy import deepcopy
 from pathlib import Path
 from typing import Optional
@@ -12,6 +13,8 @@ import joblib
 from sklearn.pipeline import Pipeline
 
 from . import _internals
+
+logger = logging.getLogger(f"stream.{__name__}")
 
 
 def export_model(setup: _internals.Setup, model, target_dir: str) -> None:
@@ -49,6 +52,7 @@ def export_model(setup: _internals.Setup, model, target_dir: str) -> None:
     full_pipe = _combine_pipeline_and_model(prep_pipe=setup.prep_pipe, model=model)
     export_name = _get_export_name(target_dir=target_dir, model=model)
     joblib.dump(full_pipe, Path(target_dir) / export_name)
+    logger.info(f"Exported modelling pipeline to '{Path(target_dir) / export_name}'")
 
 
 def _combine_pipeline_and_model(prep_pipe: Pipeline, model) -> Pipeline:
