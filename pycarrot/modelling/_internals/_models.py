@@ -11,8 +11,9 @@ When a model is required, it can be requested using the function
 
 from abc import ABC, abstractmethod
 from typing import Optional
-from sklearn.linear_model import LogisticRegression
+
 import optuna
+from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 
 

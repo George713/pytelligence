@@ -1,8 +1,9 @@
-from sklearn.pipeline import Pipeline
-from sklearn.base import BaseEstimator, TransformerMixin
-import pandas as pd
-from sklearn.preprocessing import OneHotEncoder
 import logging
+
+import pandas as pd
+from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OneHotEncoder
 
 logger = logging.getLogger(f"stream.{__name__}")
 

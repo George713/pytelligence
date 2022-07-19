@@ -18,7 +18,11 @@ pytest = "^7.1.2"
 pytest-watch = "^4.2.0"
 notebook = "^6.4.12"
 black = {extras = ["jupyter"], version = "^22.6.0"}
+isort = "^5.10.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black" 

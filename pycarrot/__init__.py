@@ -1,9 +1,7 @@
-import logging
 import datetime
+import logging
 
-from . import feat_analysis
-from . import modelling
-
+from . import feat_analysis, modelling
 
 # Set up root logger, and add a file handler to root logger
 logging.basicConfig(

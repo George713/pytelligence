@@ -1,7 +1,7 @@
-from sklearn.linear_model import LogisticRegression
 import optuna
-import pycarrot as pc
+from sklearn.linear_model import LogisticRegression
 
+import pycarrot as pc
 
 default_model = pc.modelling._internals.get_model_instance(algorithm="lr")
 

@@ -1,5 +1,5 @@
-from sklearn.datasets import load_iris
 import pandas as pd
+from sklearn.datasets import load_iris
 
 import pycarrot as pc
 

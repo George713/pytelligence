@@ -1,12 +1,10 @@
-from typing import List, Tuple, Optional
+import logging
+from typing import List, Optional, Tuple
 
 import pandas as pd
 
-from ._train_model import train_model
 from . import _internals
-
-import logging
-
+from ._train_model import train_model
 
 logger = logging.getLogger(f"stream.{__name__}")
 

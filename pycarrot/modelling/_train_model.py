@@ -1,10 +1,7 @@
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Optional, Tuple
 
 import pandas as pd
-from sklearn.ensemble import (
-    ExtraTreesClassifier,
-    RandomForestClassifier,
-)
+from sklearn.ensemble import ExtraTreesClassifier, RandomForestClassifier
 from sklearn.linear_model import (
     LogisticRegression,
     PassiveAggressiveClassifier,
@@ -16,10 +13,7 @@ from sklearn.model_selection import cross_validate
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC, LinearSVC
-from sklearn.tree import (
-    DecisionTreeClassifier,
-    ExtraTreeClassifier,
-)
+from sklearn.tree import DecisionTreeClassifier, ExtraTreeClassifier
 
 from . import _internals
 
@@ -101,6 +95,7 @@ def train_model(
     metrics = _aggregate_metrics(cv_results, algorithm)
 
     return model, metrics
+
 
 # DEPRECATED. CAN BE DELETED AFTER TESTING
 # def _get_unfitted_model(algorithm: str) -> object:

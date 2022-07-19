@@ -1,13 +1,11 @@
 """
 Contains utilty functionality used by various modules.
 """
-
+import logging
 from typing import List, Optional
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
-
-import logging
 
 logger = logging.getLogger(f"stream.{__name__}")
 

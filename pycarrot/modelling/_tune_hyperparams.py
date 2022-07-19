@@ -28,17 +28,15 @@ Example
             )
     )
 """
-from typing import List, Tuple, Optional
+import logging
+from typing import List, Optional, Tuple
 
-import pandas as pd
 import numpy as np
-from sklearn.model_selection import cross_val_score
 import optuna
+import pandas as pd
+from sklearn.model_selection import cross_val_score
 
 from . import _internals
-
-import logging
-
 
 logger = logging.getLogger(f"stream.{__name__}")
 

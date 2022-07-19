@@ -1,10 +1,8 @@
-from typing import Optional, Tuple, List
-
-
-from ._train_model import train_model
-from . import _internals
-
 import logging
+from typing import List, Optional, Tuple
+
+from . import _internals
+from ._train_model import train_model
 
 logger = logging.getLogger(f"stream.{__name__}")
 

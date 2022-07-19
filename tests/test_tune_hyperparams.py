@@ -1,6 +1,6 @@
-import pandas as pd
 import numpy as np
 import optuna
+import pandas as pd
 from sklearn.linear_model import LogisticRegression
 
 import pycarrot as pc

@@ -4,15 +4,17 @@ Tests for pycarrot.modelling.export_model
 
 import datetime
 from pathlib import Path
+
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.pipeline import Pipeline
+
 import pycarrot as pc
 from pycarrot.modelling import export_model
 from pycarrot.modelling._export_model import (
     _combine_pipeline_and_model,
-    _get_export_name,
     _get_algo_abbreviation,
+    _get_export_name,
     _get_new_number,
 )
 

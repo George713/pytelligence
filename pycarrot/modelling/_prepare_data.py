@@ -1,9 +1,8 @@
-from typing import List, Tuple
 import logging
+from typing import List, Tuple
 
-
-import yaml
 import pandas as pd
+import yaml
 from sklearn.preprocessing import LabelEncoder
 
 from . import _internals
