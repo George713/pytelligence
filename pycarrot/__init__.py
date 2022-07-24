@@ -1,7 +1,7 @@
 import datetime
 import logging
 
-from . import feat_analysis, modelling
+from . import dev_tools, feat_analysis, modelling
 
 # Set up root logger, and add a file handler to root logger
 logging.basicConfig(
