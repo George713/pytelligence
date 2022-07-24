@@ -15,3 +15,6 @@ tests/.pytest_cache
 
 # Logs
 logs/*
+
+# Other
+test_notebook.ipynb
