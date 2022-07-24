@@ -1,0 +1,16 @@
+# Config for breast cancer dataset
+# (the version WITH categorical variables)
+modelling:
+  target_clf: 'class'
+  numeric_cols:
+    - 'deg-malig'
+  categorical_cols:
+    - 'age'
+    - 'menopause'
+    - 'tumor-size'
+    - 'inv-nodes'
+    - 'node-caps'
+    - 'breast'
+    - 'breast-quad'
+    - 'irradiat'
+  feature_scaling: False
