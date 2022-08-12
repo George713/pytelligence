@@ -21,7 +21,7 @@ def compare_algorithms(
 
     Parameters
     ----------
-    setup : dict stemming from pc.modelling.prepare_data(...)
+    setup : dict stemming from pt.modelling.prepare_data(...)
 
     include : optional list of strings
         declares what algorithms to compare

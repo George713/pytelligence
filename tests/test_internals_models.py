@@ -1,15 +1,15 @@
 import optuna
 from sklearn.linear_model import LogisticRegression
 
-import pycarrot as pc
+import pytelligence as pt
 
-default_model = pc.modelling._internals.get_model_instance(algorithm="lr")
+default_model = pt.modelling._internals.get_model_instance(algorithm="lr")
 
 study = optuna.create_study(direction="maximize")
 trial = study.ask()
-adjusted_model = pc.modelling._internals.get_model_instance(algorithm="lr", trial=trial)
+adjusted_model = pt.modelling._internals.get_model_instance(algorithm="lr", trial=trial)
 
-manually_adj_model = pc.modelling._internals.get_model_instance(
+manually_adj_model = pt.modelling._internals.get_model_instance(
     algorithm="lr", hyperparams={"l1_ratio": 0.2}
 )
 

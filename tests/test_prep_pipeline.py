@@ -1,9 +1,9 @@
 import pandas as pd
 from sklearn.pipeline import Pipeline
 
-import pycarrot as pc
+import pytelligence as pt
 
-prep_pipe = pc.modelling._internals.get_prep_pipeline()
+prep_pipe = pt.modelling._internals.get_prep_pipeline()
 ohe = prep_pipe.steps[-1][1]
 
 test_df = pd.DataFrame(
@@ -22,7 +22,7 @@ def testget_prep_pipeline():
 
 def test_step_ohe():
     """Checks type of transformer in last pipeline step."""
-    assert type(ohe) == pc.modelling._internals.OHE
+    assert type(ohe) == pt.modelling._internals.OHE
 
 
 def test_ohe_attributes():
