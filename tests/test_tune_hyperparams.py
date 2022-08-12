@@ -3,7 +3,7 @@ import optuna
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 
-import pycarrot as pc
+import pytelligence as pt
 
 # Preparation
 df_clf = pd.DataFrame(
@@ -14,12 +14,12 @@ df_clf = pd.DataFrame(
     }
 )
 
-setup, _, _ = pc.modelling.prepare_data(
+setup, _, _ = pt.modelling.prepare_data(
     train_data=df_clf,
     config_path="./tests/config_test.yml",
 )
 
-objective_fn = pc.modelling._tune_hyperparams._get_objective_function(
+objective_fn = pt.modelling._tune_hyperparams._get_objective_function(
     algorithm="lr", optimize="f1", X=setup.X_train, y=setup.y_clf_train
 )
 
@@ -27,7 +27,7 @@ study = optuna.create_study(direction="maximize")
 trial = study.ask()
 # Preparation End
 
-compare_df, model_list = pc.modelling.tune_hyperparams(
+compare_df, model_list = pt.modelling.tune_hyperparams(
     setup=setup,
     include=["lr"],
     optimize="f1",

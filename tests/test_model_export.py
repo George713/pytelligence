@@ -9,9 +9,9 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.pipeline import Pipeline
 
-import pycarrot as pc
-from pycarrot.modelling import export_model
-from pycarrot.modelling._export_model import (
+import pytelligence as pt
+from pytelligence.modelling import export_model
+from pytelligence.modelling._export_model import (
     _combine_pipeline_and_model,
     _get_algo_abbreviation,
     _get_export_name,
@@ -72,7 +72,7 @@ def test_export_model():
     assert Path(f"./tests/export_test/model_{today}_nb_#1.joblib").exists() is False
 
     # Create file
-    setup = pc.modelling._internals.Setup(
+    setup = pt.modelling._internals.Setup(
         X_train=None,
         y_clf_train=None,
         y_clf_encoder=None,

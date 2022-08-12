@@ -11,15 +11,15 @@ Example
 >>> y = pd.Series(bc.target, name="class")
 >>> df = pd.concat([X, y], axis=1)
 
->>> config = pc.init_config("./config_bc.yml")
+>>> config = pt.init_config("./config_bc.yml")
 
->>> setup, X_sample, y_sample = pc.modelling.prepare_data(
+>>> setup, X_sample, y_sample = pt.modelling.prepare_data(
         train_data=df,
         config=config,
     )
 
 >>> compare_df, algo_list, model_list = (
-            pc.modelling.tune_hyperparams(
+            pt.modelling.tune_hyperparams(
                    setup=setup,
                    include=["lr", "knn"],
                    optimize="f1",
@@ -54,7 +54,7 @@ def tune_hyperparams(
     Example
     -------
     >>> compare_df, model_list = (
-                pc.modelling.tune_hyperparams(
+                pt.modelling.tune_hyperparams(
                     setup=setup,
                     include=["lr", "knn"],
                     optimize="f1",

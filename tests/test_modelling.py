@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import cross_validate
 
-import pycarrot as pc
+import pytelligence as pt
 
 df_clf = pd.DataFrame(
     data={
@@ -12,17 +12,17 @@ df_clf = pd.DataFrame(
     }
 )
 
-prepare_data_result = pc.modelling.prepare_data(
+prepare_data_result = pt.modelling.prepare_data(
     train_data=df_clf,
     config_path="./tests/config_test.yml",
 )
 setup, _, _ = prepare_data_result
 
-compare_algorithms_result = pc.modelling.compare_algorithms(setup)
+compare_algorithms_result = pt.modelling.compare_algorithms(setup)
 compare_df, algo_list, model_list = compare_algorithms_result
 
 
-unfitted_model = pc.modelling._internals.get_model_instance("lr")
+unfitted_model = pt.modelling._internals.get_model_instance("lr")
 
 X_train, y_train = setup.X_train, setup.y_clf_train
 
@@ -40,7 +40,7 @@ cv_results = cross_validate(
     n_jobs=-1,
 )
 
-result_agg_metrics = pc.modelling._train_model._aggregate_metrics(cv_results, "lr")
+result_agg_metrics = pt.modelling._train_model._aggregate_metrics(cv_results, "lr")
 
 
 def test_return():
@@ -49,7 +49,7 @@ def test_return():
 
 
 def test_return_setup():
-    assert type(prepare_data_result[0]) == pc.modelling._internals.Setup
+    assert type(prepare_data_result[0]) == pt.modelling._internals.Setup
     assert type(prepare_data_result[1]) == pd.DataFrame
     assert type(prepare_data_result[2]) == pd.Series
 
@@ -77,7 +77,7 @@ def test_return_compare():
 
 
 def test_train_model_return_type():
-    result = pc.modelling._train_model.train_model("lr", setup, return_models=True)
+    result = pt.modelling._train_model.train_model("lr", setup, return_models=True)
     assert type(result) == tuple
     assert type(result[0]) == LogisticRegression
 

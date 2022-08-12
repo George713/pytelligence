@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import LabelEncoder
 
-from pycarrot.modelling._internals import Setup
+from pytelligence.modelling._internals import Setup
 
 setup = Setup(
     X_train=pd.DataFrame(),

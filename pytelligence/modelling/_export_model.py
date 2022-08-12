@@ -32,7 +32,7 @@ def export_model(setup: _internals.Setup, model, target_dir: str) -> None:
 
     Example
     -------
-    >>> pc.modelling.export_model(
+    >>> pt.modelling.export_model(
             setup=setup,
             model=model_list[0],
             target_dir="./",

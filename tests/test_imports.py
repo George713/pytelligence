@@ -1,5 +1,5 @@
 def test_pycarrot():
-    import pycarrot as pc
+    import pytelligence as pt
 
 
 def test_pandas():
@@ -7,8 +7,8 @@ def test_pandas():
 
 
 def test_pycarrot_feat_analysis():
-    from pycarrot import feat_analysis
+    from pytelligence import feat_analysis
 
 
 def test_pycarrot_modelling():
-    from pycarrot import modelling
+    from pytelligence import modelling
