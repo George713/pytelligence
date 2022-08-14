@@ -167,7 +167,7 @@ def tune_hyperparams(
         drop=True
     )
     model_list = [model_dict[key] for key in compare_df["algorithm"]]
-    logger.info(f"\n {compare_df[['algorithm', 'metric']]}")
+    logger.info(f"\n {compare_df[['algorithm', 'metric', 'hyperparams']]}")
 
     return compare_df, model_list, opt_history_dict
 
