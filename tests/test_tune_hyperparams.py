@@ -1,6 +1,7 @@
 import numpy as np
 import optuna
 import pandas as pd
+import plotly
 from sklearn.linear_model import LogisticRegression
 
 import pytelligence as pt
@@ -27,7 +28,7 @@ study = optuna.create_study(direction="maximize")
 trial = study.ask()
 # Preparation End
 
-compare_df, model_list = pt.modelling.tune_hyperparams(
+compare_df, model_list, opt_history_dict = pt.modelling.tune_hyperparams(
     setup=setup,
     include=["lr"],
     optimize="f1",
@@ -40,6 +41,7 @@ def test_return_types():
     """Tests return types of tune_hyperparams()."""
     assert type(compare_df) == pd.DataFrame
     assert type(model_list) == list
+    assert type(opt_history_dict) == dict
 
 
 def test_return_type_objective_function():
@@ -59,3 +61,7 @@ def test_columns_of_returned_compare_df():
 
 def test_type_of_1st_entry_in_model_list():
     assert type(model_list[0]) == LogisticRegression
+
+
+def test_value_type_in_opt_history_dict():
+    assert type(opt_history_dict["lr"]) == plotly.graph_objs.Figure
