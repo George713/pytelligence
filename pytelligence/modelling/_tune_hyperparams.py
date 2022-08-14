@@ -40,6 +40,9 @@ from . import _internals
 
 logger = logging.getLogger(f"stream.{__name__}")
 
+# Turning off logging information during tuning
+optuna.logging.set_verbosity(optuna.logging.WARNING)
+
 
 def tune_hyperparams(
     setup: _internals.Setup,
