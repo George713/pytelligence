@@ -134,7 +134,8 @@ def tune_hyperparams(
         )
 
         # Tuning
-        study.optimize(objective, n_trials=n_trials)
+        logging_callback = TrialLoggingCallback()
+        study.optimize(objective, n_trials=n_trials, callbacks=[logging_callback])
 
         # Aggreration of results
         metric, hyperparams = _get_best_result(study)
@@ -231,3 +232,13 @@ def _get_best_result(study: optuna.Study) -> Tuple[float, dict]:
         hyperparams : dict
     """
     return study.best_trial.values[0], study.best_trial.user_attrs["hyperparams"]
+
+
+class TrialLoggingCallback:
+    def __call__(
+        self, study: optuna.study.Study, trial: optuna.trial.FrozenTrial
+    ) -> None:
+        logger.info(
+            f"Trial {trial.number} finished with value: {study.trials[trial.number].value:.4f} and parameters: {trial.params}. "
+            f"Best is trial {study.best_trial.number} with value: {study.best_value:.4f}"
+        )
