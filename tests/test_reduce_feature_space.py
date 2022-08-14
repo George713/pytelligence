@@ -36,8 +36,10 @@ def test_fn_exists():
 
 
 def test_return_types():
-    assert type(result) == list
+    assert type(result[0]) == list
+    assert type(result[1]) == pd.DataFrame
 
 
 def test_return_types():
-    assert type(result_w_hyperparams) == list
+    assert type(result_w_hyperparams[0]) == list
+    assert type(result_w_hyperparams[1]) == pd.DataFrame
