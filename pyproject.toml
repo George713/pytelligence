@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "pycarrot"
+name = "pytelligence"
 version = "0.1.0"
 description = "pycaret clone aimed for simplicity and production ready code"
 authors = ["Friedrich G. Froebel <froebel.business@gmail.com>"]
@@ -20,6 +20,7 @@ notebook = "^6.4.12"
 black = {extras = ["jupyter"], version = "^22.6.0"}
 isort = "^5.10.1"
 pyarrow = "^8.0.0"
+colorlog = "^6.6.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

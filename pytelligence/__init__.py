@@ -1,6 +1,8 @@
 import datetime
 import logging
 
+import colorlog
+
 from . import dev_tools, feat_analysis, modelling
 
 # Set up root logger, and add a file handler to root logger
@@ -12,10 +14,12 @@ logging.basicConfig(
 )
 
 # Create logger for handling stream
-stream_logger = logging.getLogger("stream")
-stream_logger.setLevel(logging.INFO)
-shandler = logging.StreamHandler()
+shandler = colorlog.StreamHandler()
 shandler.setFormatter(
-    logging.Formatter("[%(levelname)1.1s %(asctime)s] %(message)s", "%Y-%m-%d %H:%M:%S")
+    colorlog.ColoredFormatter(
+        "%(log_color)s[%(levelname)1.1s %(asctime)s]%(reset)s %(message)s",
+        "%Y-%m-%d %H:%M:%S",
+    )
 )
+stream_logger = colorlog.getLogger("stream")
 stream_logger.addHandler(shandler)
