@@ -101,5 +101,5 @@ def check_feature_scaling(algo_list: List[str], feature_scaling: bool) -> None:
         affected_algos = [algo for algo in algo_list if algo in ["lr"]]
         if len(affected_algos) > 0:
             logger.warning(
-                f"The algorithms {affected_algos} work suboptimally without scaled features. Consider turning it on within the config."
+                f"The algorithms {affected_algos} work suboptimally without scaled features. Consider turning it on within the config and rerun pt.modelling.prepare_data()."
             )
