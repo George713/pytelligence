@@ -93,7 +93,7 @@ def tune_hyperparams(
 
     Returns
     -------
-    Tuple[pd.DataFrame, list, list]
+    Tuple[pd.DataFrame, list, dict]
         compare_df : pd.DataFrame
             sorted overview of algorithm performance
 
@@ -102,6 +102,12 @@ def tune_hyperparams(
             using best hyperparameter combination found. List is ordered
             by achieved metric. Only runs if return_models == True.
             Otherwise returns list of None.
+
+        opt_history_dict : dict
+            Dictionary containing algorithms as keys and figures of the
+            optimization history as values.
+            Use `opt_history_dict["algorithm"].show()` in a jupyter notebook
+            to plot the graph.
     """
     logger.info("%%% TUNING HYPERPARAMETERS")
 
@@ -116,6 +122,7 @@ def tune_hyperparams(
     # with populating occuring later
     compare_df = pd.DataFrame({}, columns=["algorithm", "metric", "hyperparams"])
     model_dict = {}
+    opt_history_dict = {}
 
     logger.info(f"Algorithms: {include}")
     logger.info(f"Metric: {optimize}")
@@ -144,6 +151,9 @@ def tune_hyperparams(
             metric,
             hyperparams,
         ]
+        opt_history_dict[algorithm] = optuna.visualization.plot_optimization_history(
+            study
+        )
 
         # Training model on entire dataset
         if return_models:
@@ -159,7 +169,7 @@ def tune_hyperparams(
     model_list = [model_dict[key] for key in compare_df["algorithm"]]
     logger.info(f"\n {compare_df[['algorithm', 'metric']]}")
 
-    return compare_df, model_list
+    return compare_df, model_list, opt_history_dict
 
 
 def _get_objective_function(
