@@ -117,8 +117,8 @@ def tune_hyperparams(
     compare_df = pd.DataFrame({}, columns=["algorithm", "metric", "hyperparams"])
     model_dict = {}
 
-    logger.info(f"Algorithms selected for tuning: {include}")
-    logger.info(f"Metric to optimize for: {optimize}")
+    logger.info(f"Algorithms: {include}")
+    logger.info(f"Metric: {optimize}")
     logger.info(f"Trials per algorithm: {n_trials}")
 
     for algorithm in include:
