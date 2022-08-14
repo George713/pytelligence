@@ -30,15 +30,15 @@ def compare_algorithms(
     sort : optional str
         defines how compare_df is sorted
 
-    feature_list: Optional[List[str]] = None
-        If provided, will compare the algorithms with provided
-        feature list. Useful after reduce_feature_space()
-        has been evaluated.
-
     return_models: bool
         Flag for returning model instances trained on the
         entire training set. By default set to false to
         save on computational time.
+
+    feature_list: Optional[List[str]] = None
+        If provided, will compare the algorithms with provided
+        feature list. Useful after reduce_feature_space()
+        has been evaluated.
 
     Returns
     -------
