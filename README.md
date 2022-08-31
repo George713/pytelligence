@@ -19,7 +19,7 @@
 1. Write Readme with examples
 
 # pytelligence
-pycaret clone aimed at simplicity and production-ready code within half of the usual development time.
+pycaret clone aimed at simplicity and production-ready code within half the usual development time.
 
 ## Features
 - Automation of preprocessing
@@ -65,18 +65,18 @@ modelling:
 
 This configuration is loaded once during the data preparation step.
 
-`target_clf` specifies the column name of the target label.
+`target_clf` specifies the column name of the target label for classification use cases.
 
-`numeric_cols` & `categorical_cols` tells pytelligence the types of the feature columns, which is used during data preparation.
+`numeric_cols` & `categorical_cols` inform pytelligence about the types of feature columns, that are to be used during data preparation and subsequent training.
 
-`feature_scaling` serves as boolean flag for activating feature scaling during data preparation.
+`feature_scaling` serves as boolean flag for activating feature scaling during data preparation. (not implemented yet)
 
 ### Data Preparation
-Assuming a dataframe `df` that fits the above config the data can be prepared. Preparation includes 
+Assuming a dataframe `df` that fits the above config file the data can be prepared. Preparation includes 
 - column verification
 - one-hot-encoding of categorical columns
 - encoding of the target label in case of classification (if required)
-- scaling of numeric features if turned on
+- scaling of numeric features if turned on (not implemented yet)
 
 ```python
 setup, X_sample, y_sample = pt.modelling.prepare_data(
@@ -117,7 +117,7 @@ If no algorithm list is provided to the `include` parameter, all available algor
 `model_list` holds model instances trained on the entire training dataset sorted by `sort`. Only computed if `return_models` is set to `True`.
 
 ### Hyperparameter Tuning
-Hyperparameter tuning is automated using Bayesian optimization of the search space.
+Hyperparameter tuning is automated using Bayesian optimization.
 ```python
 compare_df_tune, model_list, opt_history_dict = (
         pt.modelling.tune_hyperparams(
@@ -161,7 +161,7 @@ best_feature_list, metric_feature_df = pt.modelling.reduce_feature_space(
 
 `acceptable_loss` is a percentage value, which is used to calculated a threshold metric: `threshold = acceptable_loss * reference_metric`. Once the set of features does not reach this threshold anymore, `EFR` is stopped.
 
-`hyperparams` is an optimal dictionary holding the set of hyperparameters to use for the algorithm.
+(Optional) `hyperparams` is a dictionary holding the set of hyperparameters to use for the algorithm.
 
 `best_feature_list` holds an unsorted list of the best feature combination found.
 
