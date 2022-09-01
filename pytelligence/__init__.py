@@ -1,9 +1,15 @@
 import datetime
 import logging
+from pathlib import Path
 
 import colorlog
 
 from . import dev_tools, feat_analysis, modelling
+
+# Create logs folder if it does not exists
+if not Path("./logs").exists():
+    Path("./logs").mkdir()
+    print(f"Created directory for logs at '{Path('./logs').resolve()}'")
 
 # Set up root logger, and add a file handler to root logger
 logging.basicConfig(
