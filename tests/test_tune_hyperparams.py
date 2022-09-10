@@ -27,7 +27,7 @@ study = optuna.create_study(direction="maximize")
 trial = study.ask()
 # Preparation End
 
-compare_df, model_list = pt.modelling.tune_hyperparams(
+compare_df, model_list, opt_history_dict = pt.modelling.tune_hyperparams(
     setup=setup,
     include=["lr"],
     optimize="f1",
@@ -40,6 +40,7 @@ def test_return_types():
     """Tests return types of tune_hyperparams()."""
     assert type(compare_df) == pd.DataFrame
     assert type(model_list) == list
+    assert type(opt_history_dict) == dict
 
 
 def test_return_type_objective_function():
