@@ -18,7 +18,7 @@ Example
         config=config,
     )
 
->>> compare_df, algo_list, model_list = (
+>>> compare_df, model_list, opt_history_dict = (
             pt.modelling.tune_hyperparams(
                    setup=setup,
                    include=["lr", "knn"],
@@ -51,7 +51,7 @@ def tune_hyperparams(
     n_trials: int = 20,
     feature_list: Optional[List[str]] = None,
     return_models: bool = False,
-) -> Tuple[pd.DataFrame, list, list]:
+) -> Tuple[pd.DataFrame, list, dict]:
     """Tunes the algorithms provided in the `include` parameter.
 
     Example
