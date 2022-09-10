@@ -97,40 +97,6 @@ def train_model(
     return model, metrics
 
 
-# DEPRECATED. CAN BE DELETED AFTER TESTING
-# def _get_unfitted_model(algorithm: str) -> object:
-#     """
-#     Returns an unfitted model instance of specified
-#     algorithm.
-#     """
-#     if algorithm == "lr":
-#         return LogisticRegression()
-#     if algorithm == "dt":
-#         return DecisionTreeClassifier()
-#     if algorithm == "extratree":
-#         return ExtraTreeClassifier()
-#     if algorithm == "extratrees":
-#         return ExtraTreesClassifier()
-#     if algorithm == "rf":
-#         return RandomForestClassifier()
-#     if algorithm == "ridge":
-#         return RidgeClassifier()
-#     if algorithm == "perceptron":
-#         return Perceptron()
-#     if algorithm == "passive-aggressive":
-#         return PassiveAggressiveClassifier()
-#     if algorithm == "knn":
-#         return KNeighborsClassifier()
-#     if algorithm == "nb":
-#         return GaussianNB()
-#     if algorithm == "linearsvc":
-#         return LinearSVC()
-#     if algorithm == "rbfsvc":
-#         return SVC()
-
-#     raise LookupError(f"'{algorithm}' is not among the avaiable algorithms.")
-
-
 def _aggregate_metrics(cv_results: Dict, algorithm: str) -> pd.DataFrame:
     """
     Adjusts results of cross validation.
