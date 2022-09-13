@@ -1,6 +1,7 @@
 import numpy as np
 import optuna
 import pandas as pd
+import plotly
 from sklearn.linear_model import LogisticRegression
 
 import pytelligence as pt
@@ -60,3 +61,7 @@ def test_columns_of_returned_compare_df():
 
 def test_type_of_1st_entry_in_model_list():
     assert type(model_list[0]) == LogisticRegression
+
+
+def test_value_type_in_opt_history_dict():
+    assert type(opt_history_dict["lr"]) == plotly.graph_objs.Figure

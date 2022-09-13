@@ -1,6 +1,9 @@
 import logging
 from typing import List, Optional, Tuple
 
+import pandas as pd
+import seaborn as sns
+
 from . import _internals
 from ._train_model import train_model
 
@@ -14,7 +17,7 @@ def reduce_feature_space(
     reference_metric: float,
     acceptable_loss: float,
     hyperparams: Optional[dict] = None,
-):
+) -> Tuple[List[str], pd.DataFrame]:
     """
     Reduces the feature space used for model training
     by iteratively removing the feature with the smallest
@@ -55,19 +58,25 @@ def reduce_feature_space(
 
     Returns
     -------
-    best_feature_list : List[str]
+    Tuple[List[str], pd.DataFrame]
+        best_feature_list : List[str]
+
+        metric_feature_df : pd.DataFrame
+            Dataframe with columns `metric` and `features` listing
+            the metric values achieved with the respective features.
     """
     logger.info("%%% REDUCING FEATURE SPACE")
     # Initiate reference values
     threshold = acceptable_loss * reference_metric
     feature_list = setup.X_train.columns.to_list()
     best_feature_list = feature_list[:]
+    metric_feature_df = pd.DataFrame(columns=["metric", "features"])
     new_metric = reference_metric
 
     logger.info(f"Algorithm selected for feature space reduction: {algorithm}")
     logger.info(f"Metric to optimize for: {metric}")
     logger.info(
-        f"Minimum acceptable metric: {threshold:.3} or {acceptable_loss} * reference metric ({reference_metric:.3})"
+        f"Minimum acceptable metric: {threshold:.3f} or {acceptable_loss} * reference metric ({reference_metric:.3f})"
     )
 
     # Iteratively remove features
@@ -80,25 +89,38 @@ def reduce_feature_space(
             hyperparams=hyperparams,
         )
         feature_list.remove(worst_feature)
-        logger.info(
-            f"Current metric: {new_metric:.3}, removing worst feature: {worst_feature}"
-        )
+        metric_feature_df.loc[len(metric_feature_df)] = [new_metric, feature_list[:]]
 
         # Update reference_metric and threshold if
         # reference_metric was improved upon
         if new_metric > reference_metric:
             reference_metric = new_metric
-            logger.info(f"Updating reference metric...")
+            threshold = acceptable_loss * reference_metric
+            logger.info(
+                f"Feature count: {len(feature_list)}, metric: {new_metric:.3f} (new best), removing worst feature: {worst_feature}"
+            )
+        else:
+            logger.info(
+                f"Feature count: {len(feature_list)}, metric: {new_metric:.3f}, removing worst feature: {worst_feature}"
+            )
 
         # Update best_feature_list if metric is equal to
         # reference_metric
         if new_metric == reference_metric:
             best_feature_list = feature_list[:]
 
+    # Adding `feature_count`` column to metric_feature_df
+    metric_feature_df["feature_count"] = metric_feature_df.features.apply(
+        lambda x: len(x)
+    )
+
     logger.info(f"Best {metric} score found: {reference_metric:.3}")
     logger.info(f"Feature list for best score: {best_feature_list}")
 
-    return best_feature_list
+    # Plot metric evolution
+    sns.lineplot(data=metric_feature_df, x="feature_count", y="metric", sort=True)
+
+    return best_feature_list, metric_feature_df
 
 
 def _find_worst_feature(
