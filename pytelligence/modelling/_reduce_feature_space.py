@@ -75,8 +75,10 @@ def reduce_feature_space(
 
     logger.info(f"Algorithm selected for feature space reduction: {algorithm}")
     logger.info(f"Metric to optimize for: {metric}")
+    logger.info(f"Acceptable loss ratio: {acceptable_loss}")
+    logger.info(f"Reference metric: {reference_metric:.3f}")
     logger.info(
-        f"Minimum acceptable metric: {threshold:.3f} or {acceptable_loss} * reference metric ({reference_metric:.3f})"
+        f"Minimum acceptable metric: {acceptable_loss} * {reference_metric:.3f} = {threshold:.3f}"
     )
 
     # Iteratively remove features
