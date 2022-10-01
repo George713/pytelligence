@@ -34,7 +34,8 @@ from typing import List, Optional, Tuple
 import numpy as np
 import optuna
 import pandas as pd
-from sklearn.model_selection import cross_val_score
+from sklearn.metrics import make_scorer, precision_score
+from sklearn.model_selection import cross_validate
 
 from . import _internals
 
@@ -120,7 +121,19 @@ def tune_hyperparams(
 
     # Preparing empty compare_df and model_dict
     # with populating occuring later
-    compare_df = pd.DataFrame({}, columns=["algorithm", "metric", "hyperparams"])
+    compare_df = pd.DataFrame(
+        {},
+        columns=[
+            "algorithm",
+            "accuracy",
+            "precision",
+            "recall",
+            "f1",
+            "roc_auc",
+            "Fit time (s)",
+            "hyperparams",
+        ],
+    )
     model_dict = {}
     opt_history_dict = {}
 
@@ -145,10 +158,9 @@ def tune_hyperparams(
         study.optimize(objective, n_trials=n_trials, callbacks=[logging_callback])
 
         # Aggreration of results
-        metric, hyperparams = _get_best_result(study)
+        metrics, hyperparams = _get_best_result(study)
         compare_df.loc[len(compare_df)] = [
-            algorithm,
-            metric,
+            *metrics.values[0],
             hyperparams,
         ]
         opt_history_dict[algorithm] = optuna.visualization.plot_optimization_history(
@@ -163,13 +175,11 @@ def tune_hyperparams(
                 .fit(setup.X_train, setup.y_clf_train)
             )
 
-    compare_df = compare_df.sort_values(by="metric", ascending=False).reset_index(
+    compare_df = compare_df.sort_values(by=optimize, ascending=False).reset_index(
         drop=True
     )
     model_list = [model_dict[key] for key in compare_df["algorithm"]]
-    logger.info(
-        f"Tuning summary:\n {compare_df[['algorithm', 'metric', 'hyperparams']]}"
-    )
+    logger.info(f"Tuning summary:\n {compare_df}")
 
     return compare_df, model_list, opt_history_dict
 
@@ -215,22 +225,33 @@ def _get_objective_function(
         """
         model = _internals.get_model_instance(algorithm=algorithm, trial=trial)
         trial.set_user_attr("hyperparams", model.get_params())
-        cv_scores = cross_val_score(
+        cv_results = cross_validate(
             model,
             X,
             y,
-            scoring=optimize,
+            scoring={
+                "accuracy": "accuracy",
+                "precision": make_scorer(
+                    lambda *args, **kwargs: precision_score(
+                        *args, **kwargs, zero_division=0
+                    )
+                ),
+                "recall": "recall",
+                "f1": "f1",
+                "roc_auc": "roc_auc",
+            },
             n_jobs=-1,
-            error_score="raise",
         )
+        metrics = _internals.aggregate_metrics(cv_results, algorithm)
+        trial.set_user_attr("metrics", metrics)
 
-        return cv_scores.mean()
+        return cv_results[f"test_{optimize}"].mean()
 
     return objective_fn
 
 
 def _get_best_result(study: optuna.Study) -> Tuple[float, dict]:
-    """Returns metric and hyperparameters of best model found
+    """Returns metrics and hyperparameters of best model found
     during study run.
 
     Parameters
@@ -240,10 +261,13 @@ def _get_best_result(study: optuna.Study) -> Tuple[float, dict]:
     Returns
     -------
     Tuple[float, dict]
-        metric : float
+        metrics : pd.DataFrame
         hyperparams : dict
     """
-    return study.best_trial.values[0], study.best_trial.user_attrs["hyperparams"]
+    return (
+        study.best_trial.user_attrs["metrics"],
+        study.best_trial.user_attrs["hyperparams"],
+    )
 
 
 class TrialLoggingCallback:
