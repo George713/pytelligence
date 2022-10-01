@@ -40,7 +40,7 @@ cv_results = cross_validate(
     n_jobs=-1,
 )
 
-result_agg_metrics = pt.modelling._train_model._aggregate_metrics(cv_results, "lr")
+result_agg_metrics = pt.modelling._internals.aggregate_metrics(cv_results, "lr")
 
 
 def test_return():

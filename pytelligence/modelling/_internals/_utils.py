@@ -4,6 +4,7 @@ Contains utilty functionality used by various modules.
 import logging
 from typing import List, Optional
 
+import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 
@@ -83,6 +84,47 @@ def check_metric(metric: Optional[str]):
         raise LookupError(
             f"'{metric}' was provided as sort parameter, but is not among the avaiable metrics."
         )
+
+
+def aggregate_metrics(cv_results: dict, algorithm: str) -> pd.DataFrame:
+    """
+    Adjusts results of cross validation.
+
+    Parameters
+    ----------
+    cv_results : dict
+
+    algorithm : str
+
+    Returns
+    -------
+    metrics : pd.DataFrame
+        containing single row with model metrics
+    """
+    # Round result to 3 digits behind comma
+    (accuracy, precision, recall, f1, roc_auc, fit_time,) = (
+        round(cv_results[col].mean(), 3)
+        for col in [
+            "test_accuracy",
+            "test_precision",
+            "test_recall",
+            "test_f1",
+            "test_roc_auc",
+            "fit_time",
+        ]
+    )
+
+    return pd.DataFrame(
+        {
+            "algorithm": [algorithm],
+            "accuracy": [accuracy],
+            "precision": [precision],
+            "recall": [recall],
+            "f1": [f1],
+            "roc_auc": [roc_auc],
+            "Fit time (s)": [fit_time],
+        }
+    )
 
 
 def check_feature_scaling(algo_list: List[str], feature_scaling: bool) -> None:

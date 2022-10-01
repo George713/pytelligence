@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Tuple
+from typing import List, Optional, Tuple
 
 import pandas as pd
 from sklearn.ensemble import ExtraTreesClassifier, RandomForestClassifier
@@ -92,47 +92,6 @@ def train_model(
     model = model.fit(X_train, y_train) if return_models else None
 
     # Aggregate metrics
-    metrics = _aggregate_metrics(cv_results, algorithm)
+    metrics = _internals.aggregate_metrics(cv_results, algorithm)
 
     return model, metrics
-
-
-def _aggregate_metrics(cv_results: Dict, algorithm: str) -> pd.DataFrame:
-    """
-    Adjusts results of cross validation.
-
-    Parameters
-    ----------
-    cv_results : dict
-
-    algorithm : str
-
-    Returns
-    -------
-    metrics : pd.DataFrame
-        containing single row with model metrics
-    """
-    # Round result to 3 digits behind comma
-    (accuracy, precision, recall, f1, roc_auc, fit_time,) = (
-        round(cv_results[col].mean(), 3)
-        for col in [
-            "test_accuracy",
-            "test_precision",
-            "test_recall",
-            "test_f1",
-            "test_roc_auc",
-            "fit_time",
-        ]
-    )
-
-    return pd.DataFrame(
-        {
-            "algorithm": [algorithm],
-            "accuracy": [accuracy],
-            "precision": [precision],
-            "recall": [recall],
-            "f1": [f1],
-            "roc_auc": [roc_auc],
-            "Fit time (s)": [fit_time],
-        }
-    )

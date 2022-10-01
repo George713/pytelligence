@@ -56,7 +56,18 @@ def test_return_type_of_objective_function():
 
 
 def test_columns_of_returned_compare_df():
-    assert set(compare_df.columns) == set(["algorithm", "metric", "hyperparams"])
+    assert set(compare_df.columns) == set(
+        [
+            "algorithm",
+            "accuracy",
+            "precision",
+            "recall",
+            "f1",
+            "roc_auc",
+            "Fit time (s)",
+            "hyperparams",
+        ]
+    )
 
 
 def test_type_of_1st_entry_in_model_list():
