@@ -15,8 +15,9 @@ def prepare_data(
     config_path: str,
 ) -> Tuple[_internals.Setup, pd.DataFrame, pd.Series]:
     """Prepares data by
-      1) One-Hot-Encoding remaining categorical features
-      2) Encoding labels of classification target - if required
+      1) Scaling numeric features
+      2) One-Hot-Encoding remaining categorical features
+      3) Encoding labels of classification target - if required
 
     Parameters
     ----------
@@ -50,7 +51,7 @@ def prepare_data(
     ### Preparation ###
 
     # Assembling preprocessing pipeline
-    prep_pipe = _internals.get_prep_pipeline()
+    prep_pipe = _internals.get_prep_pipeline(config=config)
 
     # Composing X_train
     X_train = prep_pipe.fit_transform(train_data[original_features])
