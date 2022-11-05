@@ -4,4 +4,4 @@ modelling:
     - num_col
   categorical_cols:
     - cat_col
-  feature_scaling: False
+  feature_scaling: True
