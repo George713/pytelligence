@@ -8,7 +8,7 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 logger = logging.getLogger(f"stream.{__name__}")
 
 
-def get_prep_pipeline(config) -> Pipeline:
+def get_prep_pipeline(config: dict) -> Pipeline:
     """Return unfitted preprocessing pipeline.
 
     Preprocessing steps include:
