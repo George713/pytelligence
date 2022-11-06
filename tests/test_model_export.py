@@ -5,6 +5,7 @@ Tests for pycarrot.modelling.export_model
 import datetime
 from pathlib import Path
 
+import pytest
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.pipeline import Pipeline
@@ -18,11 +19,14 @@ from pytelligence.modelling._export_model import (
     _get_new_number,
 )
 
-# Preparation
-today = datetime.date.today()
+
+@pytest.fixture
+def today():
+    return datetime.date.today()
+
 
 test_file = [file for file in Path("./tests/export_test/").glob("./*")][0]
-test_file.rename(test_file.parent / f"model_{today}_lr_#16.joblib")
+test_file.rename(test_file.parent / f"model_{datetime.date.today()}_lr_#16.joblib")
 # End of Preparation
 
 
@@ -40,21 +44,21 @@ def test_get_algo_abbreviation():
     assert result == "lr"
 
 
-def test_get_new_number_with_preexisting_file():
+def test_get_new_number_with_preexisting_file(today):
     result = _get_new_number(
         target_dir="./tests/export_test/", temp_name=f"model_{today}_lr"
     )
     assert result == 17
 
 
-def test_get_new_number_without_preexisting_file():
+def test_get_new_number_without_preexisting_file(today):
     result = _get_new_number(
         target_dir="./tests/export_test/", temp_name=f"model_{today}_xgb"
     )
     assert result is None
 
 
-def test_get_export_name_with_preexisting_file():
+def test_get_export_name_with_preexisting_file(today):
 
     result = _get_export_name(
         target_dir="./tests/export_test/", model=LogisticRegression()
@@ -62,12 +66,12 @@ def test_get_export_name_with_preexisting_file():
     assert result == f"model_{today}_lr_#17.joblib"
 
 
-def test_get_export_name_without_preexisting_file():
+def test_get_export_name_without_preexisting_file(today):
     result = _get_export_name(target_dir="./tests/export_test/", model=GaussianNB())
     assert result == f"model_{today}_nb_#1.joblib"
 
 
-def test_export_model():
+def test_export_model(today):
     # Verify that file does not exist yet
     assert Path(f"./tests/export_test/model_{today}_nb_#1.joblib").exists() is False
 

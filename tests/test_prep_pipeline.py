@@ -17,11 +17,6 @@ def test_df():
 
 
 @pytest.fixture
-def config():
-    return pt.modelling._prepare_data._init_config(path="./tests/config_test.yml")
-
-
-@pytest.fixture
 def prep_pipe(config):
     return pt.modelling._internals.get_prep_pipeline(config=config)
 

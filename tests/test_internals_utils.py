@@ -1,9 +1,14 @@
+import pytest
+
 import pytelligence as pt
 
-available_algo_result = pt.modelling._internals.get_available_algos()
+
+@pytest.fixture
+def available_algo_result():
+    return pt.modelling._internals.get_available_algos()
 
 
-def test_get_available_algos_type():
+def test_get_available_algos_type(available_algo_result):
     assert type(available_algo_result) == list
     assert all(type(algo) == str for algo in available_algo_result)
     assert all(
@@ -25,15 +30,15 @@ def test_get_available_algos_type():
     )
 
 
-def test_get_available_algos_type_of_entries():
+def test_get_available_algos_type_of_entries(available_algo_result):
     assert all(type(algo) == str for algo in available_algo_result)
 
 
-def test_get_available_algos_entries():
+def test_get_available_algos_entries(available_algo_result):
     assert all(algo in available_algo_result for algo in ["lr"])
 
 
-def testc_heck_include_correct():
+def testc_heck_include_correct(available_algo_result):
     result = pt.modelling._internals.check_include(available_algo_result)
     assert result is None
 
