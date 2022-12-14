@@ -7,10 +7,12 @@ import datetime
 import logging
 from copy import deepcopy
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 import joblib
+import numpy as np
 from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import LabelEncoder
 
 from . import _internals
 
@@ -49,18 +51,25 @@ def export_model(setup: _internals.Setup, model, target_dir: str) -> None:
     target_dir : str
         Target directory for saving the output file to.
     """
-    full_pipe = _combine_pipeline_and_model(prep_pipe=setup.prep_pipe, model=model)
+    full_pipe = _combine_pipeline_and_model(
+        prep_pipe=setup.prep_pipe, model=model, y_clf_encoder=setup.y_clf_encoder
+    )
     export_name = _get_export_name(target_dir=target_dir, model=model)
     joblib.dump(full_pipe, Path(target_dir) / export_name)
     logger.info(f"Exported modelling pipeline to '{Path(target_dir) / export_name}'")
 
 
-def _combine_pipeline_and_model(prep_pipe: Pipeline, model) -> Pipeline:
+def _combine_pipeline_and_model(
+    prep_pipe: Pipeline, model, y_clf_encoder: LabelEncoder
+) -> Pipeline:
     """Adds `model` as last step to `prep_pipe`."""
     # Making deep copy, so that the model-step is not added to the
     # original pipeline object.
     prep_pipe_copy = deepcopy(prep_pipe)
-    prep_pipe_copy.steps.append(("model", model))
+    prep_pipe_copy.steps.append(
+        ("model_wrapper", ModelWrapper(estimator=model, y_clf_encoder=y_clf_encoder))
+    )
+    # prep_pipe_copy.steps.append(("model", model))
     return prep_pipe_copy
 
 
@@ -115,3 +124,42 @@ def _get_new_number(target_dir: str, temp_name: str) -> Optional[int]:
         return last_number + 1
     else:
         return None
+
+
+class ModelWrapper:
+    """Wrapper class for estimator and label encoder.
+
+    In case of a classification task the target variable is often
+    encoded as string format. During preprocessing such target columns
+    are encoded to numerical values so that the subsequent estimator can
+    handle the data. This wrapper class facilitates the decoding of the
+    estimator's prediction into the orignal format.
+
+    Attributes
+    ----------
+    estimator : Estimator in scikit-learn format
+        Estimator trained during a previous step.
+    y_clf_encoder : LabelEncoder
+        Retrieved from Setup object, i.e. setup.y_clf_encoder
+
+    Methods
+    -------
+    predict(X)
+        Calls the predict()-method of the estimator and applies decoding
+        of the label encoder if one was used.
+    predict_proba(X)
+        Calls the estimator's predict_proba()-method.
+    """
+
+    def __init__(self, estimator, y_clf_encoder: Union[LabelEncoder, None]) -> None:
+        self.estimator = estimator
+        self.y_clf_encoder = y_clf_encoder
+
+    def predict(self, X) -> np.ndarray:
+        if self.y_clf_encoder:
+            return self.y_clf_encoder.inverse_transform(self.estimator.predict(X))
+        else:
+            return self.estimator.predict(X)
+
+    def predict_proba(self, X) -> np.ndarray:
+        return self.estimator.predict_proba(X)

@@ -34,9 +34,11 @@ def test_combine_pipeline_and_model():
     full_pipe = _combine_pipeline_and_model(
         prep_pipe=Pipeline(steps=[]),
         model=LogisticRegression(),
+        y_clf_encoder=None,
     )
-    assert full_pipe.steps[-1][0] == "model"
-    assert type(full_pipe.steps[-1][1]) == LogisticRegression
+    assert full_pipe.steps[-1][0] == "model_wrapper"
+    assert type(full_pipe.steps[-1][1]) == pt.modelling._export_model.ModelWrapper
+    assert type(full_pipe.steps[-1][1].estimator) == LogisticRegression
 
 
 def test_get_algo_abbreviation():
