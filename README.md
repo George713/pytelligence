@@ -49,14 +49,14 @@ This configuration is loaded once during the data preparation step.
 
 `numeric_cols` & `categorical_cols` inform pytelligence about the types of feature columns, that are to be used during data preparation and subsequent training.
 
-`feature_scaling` serves as boolean flag for activating feature scaling during data preparation. (not implemented yet)
+`feature_scaling` serves as boolean flag for activating feature scaling during data preparation.
 
 ### Data Preparation
 Assuming a dataframe `df` that fits the above config file the data can be prepared. Preparation includes 
 - column verification
 - one-hot-encoding of categorical columns
 - encoding of the target label in case of classification (if required)
-- scaling of numeric features if turned on (not implemented yet)
+- scaling of numeric features (if turned on within config)
 
 ```python
 setup, X_sample, y_sample = pt.modelling.prepare_data(
@@ -90,11 +90,11 @@ Implemented algorithms include:
 
 If no algorithm list is provided to the `include` parameter, all available algorithms are compared.
 
-`compare_df` returns a pandas dataframe which holds the results of the different algorithms sorted by the metric provided with the `sort` parameter.
+`compare_df` returns a pandas dataframe which holds the results of the different algorithms sorted by the metric provided with the `sort` parameter. Possible values for `sort` are `accuracy`, `precision`, `recall`, `f1` & `roc_auc`.
 
 `algo_list` is a list comprised of the different algorithm abbreviations sorted by `sort`. It serves as an easy means to referencing the best algorithms in later processing steps.
 
-`model_list` holds model instances trained on the entire training dataset sorted by `sort`. Only computed if `return_models` is set to `True`.
+`model_list` holds model instances trained on the entire training dataset sorted by `sort`. Only computed if `return_models` is set to `True`. (Note that these are the only the estimators, not including the preprocessing pipeline applied to the initial dataset.)
 
 ### Hyperparameter Tuning
 Hyperparameter tuning is automated using Bayesian optimization.
@@ -106,12 +106,15 @@ compare_df_tune, model_list, opt_history_dict = (
                optimize="f1",
                n_trials=5,
                return_models=True,
+               feature_list=None, # optional
         )
 )
 ```
 `optimize` determines the metric to optimize for.
 
 `n_trials` specifies the number of hyperparameter sets to check for each algorithm.
+
+`feature_list` determines which feature columns to use during training. This optional parameter is often used after analysing the best features via `EFR` (see further down).
 
 `compare_df_tune` holds an overview of the achieved target metric for each algorithm along with the best set of hyperparameters.
 
