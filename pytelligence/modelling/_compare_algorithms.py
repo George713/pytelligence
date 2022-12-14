@@ -16,8 +16,7 @@ def compare_algorithms(
     return_models: bool = False,
     feature_list: Optional[List[str]] = None,
 ) -> Tuple[pd.DataFrame, List, List]:
-    """
-    Calculates various metrics for different machine learning
+    """Calculates various metrics for different machine learning
     algorithms.
 
     Parameters
@@ -28,7 +27,8 @@ def compare_algorithms(
         declares what algorithms to compare
 
     sort : optional str
-        defines how compare_df is sorted
+        Defines how compare_df is sorted. Possible values are accuracy,
+        precision, recall, f1 & roc_auc.
 
     return_models: bool
         Flag for returning model instances trained on the
