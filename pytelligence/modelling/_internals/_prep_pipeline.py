@@ -55,7 +55,7 @@ class CustomStandardScaler(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X, y=None):
-        X[self.numeric_cols] = self.scaler.transform(X.loc[:, self.numeric_cols])
+        X.loc[:, self.numeric_cols] = self.scaler.transform(X[self.numeric_cols])
         return X
 
 
