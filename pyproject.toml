@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pytelligence"
-version = "0.2.1"
+version = "0.2.2"
 description = "pycaret clone aimed for simplicity and production ready code"
 authors = ["Friedrich G. Froebel <froebel.business@gmail.com>"]
 license = "All rights reserved"

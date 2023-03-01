@@ -178,7 +178,9 @@ def tune_hyperparams(
     compare_df = compare_df.sort_values(by=optimize, ascending=False).reset_index(
         drop=True
     )
-    model_list = [model_dict[key] for key in compare_df["algorithm"]]
+    model_list = (
+        [model_dict[key] for key in compare_df["algorithm"]] if return_models else []
+    )
     logger.info(f"Tuning summary:\n {compare_df}")
 
     return compare_df, model_list, opt_history_dict
