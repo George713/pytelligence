@@ -4,9 +4,6 @@
 # Cache directories
 .pytest_cache
 *__pycache__*
-pycarrot/__pycache__*
-pycarrot/modelling/__pycache__*
-tests/__pycache__*
 tests/.pytest_cache
 
 # Misc
@@ -14,7 +11,6 @@ tests/.pytest_cache
 dist/*
 
 # Logs
-logs/*
+**/logs
 
 # Other
-test_notebook.ipynb
