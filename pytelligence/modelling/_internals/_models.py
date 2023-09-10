@@ -137,7 +137,7 @@ class ModelContainer(ABC):
 
 class ClfLinearRegression(ModelContainer):
     """
-    ModelContainer for classification algorithm `LinearRegression`.
+    ModelContainer for classification algorithm `LogisticRegression`.
 
     See: https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html
 
@@ -164,7 +164,7 @@ class ClfLinearRegression(ModelContainer):
         self.tuning_params = (
             {
                 "C": trial.suggest_float("C", 1e-6, 1e2, log=True),
-                "l1_ratio": trial.suggest_uniform("l1_ratio", 0, 1),
+                "l1_ratio": trial.suggest_float("l1_ratio", 0.0, 1.0),
             }
             if trial
             else None
